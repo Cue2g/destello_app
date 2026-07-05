@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 1. USUARIOS
+model User {
+  id                Int            @id @default(autoincrement())
+  email             String         @unique
+  name              String?
+  passwordHash      String
+  role              UserRole       @default(ADMIN)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  createdCandidates Candidate[]    @relation("CreatedBy")
+  uploadedCandidates Candidate[]   @relation("UploadedBy")
+  ownedCandidates   Candidate[]    @relation("OwnedCandidates")
+  emailConfig       EmailConfig?
+  wahaConfig        WahaConfig?
+  notes             Note[]
+  activities        ActivityLog[]
+}
+
+enum UserRole {
+  ADMIN
+  VIEWER
+}
+
+// 2. CANDIDATOS
+model Candidate {
+  id           Int             @id @default(autoincrement())
+  name         String?
+  email        String?
+  phone        String?
+  address      String?
+  education    String?
+  experience   String?
+  skills       String[]
+  courses      String?
+  cvSummary    String?
+  source       CandidateSource
+  cvFilePath   String?
+  rawText      String?
+  status       CandidateStatus @default(NEW)
+  observations String?
+
+  ownerId     Int?
+  owner       User?           @relation("OwnedCandidates", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdById Int?
+  createdBy   User?           @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  uploadedById Int?
+  uploadedBy  User?           @relation("UploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  tags        Tag[]
+  notes       Note[]
+  activities  ActivityLog[]
+}
+
+enum CandidateSource {
+  WHATSAPP
+  EMAIL
+  UPLOAD
+}
+
+enum CandidateStatus {
+  NEW
+  REVIEWED
+  CONTACTED
+  REJECTED
+  HIRED
+}
+
+// 3. ETIQUETAS
+model Tag {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  color      String      @default("#3b82f6")
+  prompt     String?
+  createdAt  DateTime    @default(now())
+
+  candidates Candidate[]
+}
+
+// 4. NOTAS
+model Note {
+  id          Int       @id @default(autoincrement())
+  content     String
+  candidateId Int
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// 5. LOG DE ACTIVIDAD
+model ActivityLog {
+  id          Int       @id @default(autoincrement())
+  candidateId Int
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  action      String
+  details     String?
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+}
+
+// 6. CONFIGURACIÓN DE EMAIL (por usuario)
+model EmailConfig {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  host        String
+  port        Int       @default(993)
+  userEmail   String
+  password    String
+  useTls      Boolean   @default(true)
+  lastChecked DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// 7. CONFIGURACIÓN DE WAHA (WhatsApp API, por usuario)
+model WahaConfig {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiUrl      String
+  apiKey      String?
+  sessionName String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
