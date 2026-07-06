@@ -1,8 +1,21 @@
 import { auth } from "@/auth"
 import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
+import { validateCandidateData, formatValidationErrors } from "@/lib/services/validate-candidate"
+import fs from "fs/promises"
+import path from "path"
 
 export const runtime = 'nodejs'
+
+async function deleteUploadFile(filePath: string | null | undefined) {
+  if (!filePath) return
+  const fullPath = path.join(process.cwd(), "public", filePath)
+  try {
+    await fs.unlink(fullPath)
+  } catch {
+    // file might not exist
+  }
+}
 
 export async function POST(request: NextRequest) {
   const session = await auth()
@@ -18,6 +31,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Falta el archivo" }, { status: 400 })
     }
 
+    const validationErrors = await validateCandidateData({ email, phone })
+    if (validationErrors.length > 0) {
+      await deleteUploadFile(filePath)
+      return NextResponse.json(
+        { error: formatValidationErrors(validationErrors) },
+        { status: 409 }
+      )
+    }
+
     const tagConnect = Array.isArray(tagIds) && tagIds.length > 0
       ? { connect: tagIds.map((id: number) => ({ id })) }
       : undefined
@@ -25,8 +47,8 @@ export async function POST(request: NextRequest) {
     const candidate = await prisma.candidate.create({
       data: {
         name: name || null,
-        email: email || null,
-        phone: phone || null,
+        email: email!.trim().toLowerCase(),
+        phone: phone!,
         address: address || null,
         education: Array.isArray(education) ? JSON.stringify(education) : null,
         experience: Array.isArray(experience) ? JSON.stringify(experience) : null,

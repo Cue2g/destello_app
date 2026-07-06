@@ -145,6 +145,12 @@ export function UploadForm() {
     if (!res.ok) {
       setError(data.error || "Error al guardar")
       setSaving(false)
+      if (res.status === 409) {
+        setPreview(null)
+        setSelectedFile(null)
+        setSelectedTagIds([])
+        if (fileInputRef.current) fileInputRef.current.value = ''
+      }
       return
     }
 

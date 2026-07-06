@@ -35,8 +35,8 @@ enum UserRole {
 model Candidate {
   id           Int             @id @default(autoincrement())
   name         String?
-  email        String?
-  phone        String?
+  email        String          @unique
+  phone        String          @unique
   address      String?
   education    String?
   experience   String?
