@@ -60,11 +60,11 @@ export default async function PanelDashboard() {
   ) as Record<CandidateStatus, number>
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 motion-preset-fade motion-duration-500">
       <PageHeader breadcrumbs={[{ label: "Panel" }]} />
 
       {/* Total */}
-      <div className="border border-base-300 bg-base-100 rounded-lg p-6 flex items-center gap-5">
+      <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect:motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6 flex items-center gap-5">
         <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
           <span className="icon-[tabler--users-group] size-6" />
         </div>
@@ -75,11 +75,16 @@ export default async function PanelDashboard() {
       </div>
 
       {/* Por plataforma */}
-      <div>
-        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4">Por plataforma</h2>
+      <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect:motion-ease-spring-smooth">
+        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4 motion-preset-fade motion-duration-700">Por plataforma</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {(Object.keys(sourceLabels) as CandidateSource[]).map((src) => (
-            <div key={src} className="border border-base-300 bg-base-100 rounded-lg p-5 flex items-center gap-4">
+          {(Object.keys(sourceLabels) as CandidateSource[]).map((src, i) => (
+            <div
+              key={src}
+              className={`border border-base-300 bg-base-100 rounded-lg p-5 flex items-center gap-4 ${
+                i === 1 ? "intersect:motion-delay-[150ms]" : i === 2 ? "intersect:motion-delay-[300ms]" : ""
+              }`}
+            >
               <div
                 className={`flex size-10 items-center justify-center rounded-full shrink-0 ${sourceColors[src]}`}
               >
@@ -95,12 +100,15 @@ export default async function PanelDashboard() {
       </div>
 
       {/* Por estado - pipeline */}
-      <div>
-        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4">Pipeline de candidatos</h2>
+      <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect:motion-ease-spring-smooth">
+        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4 motion-preset-fade motion-duration-700">Pipeline de candidatos</h2>
         <div className="border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3 sm:gap-0">
             {pipelineOrder.map((st, i) => (
-              <div key={st} className="flex flex-col sm:flex-row items-center gap-3 sm:gap-0">
+              <div
+                key={st}
+                className="flex flex-col sm:flex-row items-center gap-3 sm:gap-0"
+              >
                 {i > 0 && (
                   <>
                     <span className="sm:hidden text-base-content/40">

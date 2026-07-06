@@ -138,7 +138,7 @@ export default function ConnectionsPage() {
 
   if (loading) {
     return (
-      <div>
+      <div className="motion-preset-fade motion-duration-500">
         <PageHeader
           breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Conexiones" }]}
           backHref="/panel"
@@ -152,16 +152,16 @@ export default function ConnectionsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 motion-preset-fade motion-duration-500">
       <PageHeader
         breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Conexiones" }]}
         backHref="/panel"
       />
-      <h1 className="text-lg font-bold tracking-tight">Conexiones</h1>
+      <h1 className="text-lg font-bold tracking-tight motion-preset-slide-up motion-duration-500">Conexiones</h1>
 
       {config ? (
         // Estado y Sincronización (cuando hay config)
-        <div className="border border-base-300 bg-base-100 rounded-lg p-6">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col items-center gap-3 mb-6">
             <div className="flex size-10 items-center justify-center rounded-full bg-success/10 text-success">
               <span className="icon-[tabler--mail-check] size-5" />
@@ -219,7 +219,7 @@ export default function ConnectionsPage() {
         </div>
       ) : (
         // Configuración de Email (cuando no hay config)
-        <div className="border border-base-300 bg-base-100 rounded-lg p-6">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col items-center gap-3 mb-6">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
               <span className="icon-[tabler--mail] size-5" />
@@ -359,8 +359,8 @@ export default function ConnectionsPage() {
 
       {/* Modal de ayuda para configurar IMAP */}
       {showIntro && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="card bg-base-100 shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 motion-preset-fade motion-duration-300">
+          <div className="card bg-base-100 shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto motion-preset-slide-up motion-duration-300">
             <div className="card-body gap-6">
               <header className="flex flex-col items-center gap-3">
                 <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">

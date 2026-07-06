@@ -9,19 +9,19 @@ export default async function UsersPage() {
   })
 
   return (
-    <div>
+    <div className="motion-preset-fade motion-duration-500">
       <PageHeader
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Usuarios" }]}
         backHref="/admin"
       />
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 motion-preset-slide-up motion-duration-500">
         <h1 className="text-lg font-bold tracking-tight">Usuarios</h1>
-        <Link href="/admin/users/create" className="btn btn-primary btn-sm">
+        <Link href="/admin/users/create" className="btn btn-primary btn-sm active:motion-preset-compress">
           Nuevo usuario
         </Link>
       </div>
 
-      <div className="border border-base-300 bg-base-100 rounded-lg overflow-hidden">
+      <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg overflow-hidden">
         <table className="table w-full">
           <thead>
             <tr className="text-[11px] text-base-content/60 uppercase tracking-wider border-b border-base-300">
@@ -34,7 +34,7 @@ export default async function UsersPage() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0">
+              <tr key={user.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0 ">
                 <td className="text-sm">{user.email}</td>
                 <td className="text-sm">{user.name || "—"}</td>
                 <td>

@@ -9,19 +9,19 @@ export default async function ClientsPage() {
   })
 
   return (
-    <div>
+    <div className="motion-preset-fade motion-duration-500">
       <PageHeader
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Clientes" }]}
         backHref="/admin"
       />
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 motion-preset-slide-up motion-duration-500">
         <h1 className="text-lg font-bold tracking-tight">Clientes</h1>
-        <Link href="/admin/clients/create" className="btn btn-primary btn-sm">
+        <Link href="/admin/clients/create" className="btn btn-primary btn-sm active:motion-preset-compress">
           Nuevo cliente
         </Link>
       </div>
 
-      <div className="border border-base-300 bg-base-100 rounded-lg overflow-hidden">
+      <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg overflow-hidden">
         <table className="table w-full">
           <thead>
             <tr className="text-[11px] text-base-content/60 uppercase tracking-wider border-b border-base-300">
@@ -35,7 +35,7 @@ export default async function ClientsPage() {
           </thead>
           <tbody>
             {clients.map((client) => (
-              <tr key={client.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0">
+              <tr key={client.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0 ">
                 <td className="text-sm font-medium">{client.name}</td>
                 <td className="text-sm text-base-content/75">{client.email}</td>
                 <td className="text-sm text-base-content/75">{client.phone || "—"}</td>

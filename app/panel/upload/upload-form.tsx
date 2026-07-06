@@ -270,7 +270,7 @@ export function UploadForm() {
         )}
 
         <div
-          className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+          className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors motion-preset-pulse motion-duration-2000 motion-loop-once ${
             dragOver
               ? 'border-primary bg-primary/5'
               : 'border-base-300 hover:border-primary/50'
@@ -376,8 +376,8 @@ export function UploadForm() {
       </form>
 
       {preview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="card bg-base-100 shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 motion-preset-fade motion-duration-300">
+          <div className="card bg-base-100 shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto motion-preset-slide-up motion-duration-300">
             <div className="card-body gap-6">
               <header className="flex flex-col items-center gap-3">
                 <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">

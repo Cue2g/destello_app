@@ -1,5 +1,7 @@
 @import "tailwindcss";
+@import "tailwindcss-intersect";
 @plugin "flyonui";
+@plugin "tailwindcss-motion";
 @plugin "@iconify/tailwind4";
 @import "../node_modules/flyonui/variants.css";
 @import "../node_modules/notyf/notyf.min.css";

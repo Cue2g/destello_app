@@ -63,7 +63,7 @@ export function ConfirmDialog({
       role="dialog"
       tabIndex={-1}
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog motion-preset-pop motion-duration-300">
         <div className="modal-content">
           <div className="modal-header">
             <h3 className="modal-title">{title}</h3>

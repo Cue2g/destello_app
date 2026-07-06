@@ -3,14 +3,14 @@ import { PageHeader } from "@/components/page-header"
 
 export default function AdminDashboard() {
   return (
-    <div>
+    <div className="motion-preset-fade motion-duration-700">
       <PageHeader breadcrumbs={[{ label: "Admin" }]} />
-      <h1 className="text-lg font-bold tracking-tight mb-6">Panel de administración</h1>
+      <h1 className="text-lg font-bold tracking-tight mb-6 motion-preset-slide-up motion-duration-500">Panel de administración</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link
           href="/admin/users"
-          className="border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
+          className="intersect:motion-scale-in-0 intersect:motion-opacity-in-0 intersect-half motion-ease-spring-bouncy border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
         >
           <div className="flex flex-col items-center text-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/users/create"
-          className="border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
+          className="intersect:motion-scale-in-0 intersect:motion-opacity-in-0 intersect-half intersect:motion-delay-[200ms] motion-ease-spring-bouncy border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
         >
           <div className="flex flex-col items-center text-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/clients"
-          className="border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
+          className="intersect:motion-scale-in-0 intersect:motion-opacity-in-0 intersect-half intersect:motion-delay-[400ms] motion-ease-spring-bouncy border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
         >
           <div className="flex flex-col items-center text-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/clients/create"
-          className="border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
+          className="intersect:motion-scale-in-0 intersect:motion-opacity-in-0 intersect-half intersect:motion-delay-[600ms] motion-ease-spring-bouncy border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
         >
           <div className="flex flex-col items-center text-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
