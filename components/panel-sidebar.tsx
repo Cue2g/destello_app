@@ -1,8 +1,10 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { signOut } from "next-auth/react"
+import { showToast } from "@/components/toast"
 
 const navLinks = [
   {
@@ -42,10 +44,50 @@ export function PanelSidebar({
 }) {
   const pathname = usePathname()
   const router = useRouter()
+  const [hasEmailConfig, setHasEmailConfig] = useState(false)
+  const [syncingEmail, setSyncingEmail] = useState(false)
+
+  useEffect(() => {
+    fetch("/api/email/config")
+      .then(r => r.json())
+      .then(d => setHasEmailConfig(!!d.config))
+      .catch(() => {})
+  }, [])
 
   function isActive(href: string, exact: boolean) {
     if (exact) return pathname === href
     return pathname.startsWith(href)
+  }
+
+  async function handleEmailSync() {
+    if (!hasEmailConfig) {
+      router.push("/panel/connections")
+      return
+    }
+
+    setSyncingEmail(true)
+    try {
+      const res = await fetch("/api/email/sync", { method: "POST" })
+      const data = await res.json()
+
+      if (!res.ok) {
+        showToast(data.error || "Error al sincronizar", "error")
+        return
+      }
+
+      if (data.candidatesCreated > 0) {
+        showToast(`${data.candidatesCreated} candidato(s) creado(s) desde email`, "success")
+      } else if (data.processedEmails === 0) {
+        showToast("No se encontraron emails nuevos", "success")
+      } else if (data.duplicates > 0) {
+        showToast(`${data.duplicates} archivo(s) duplicado(s) ignorados`, "success")
+      }
+    } catch {
+      showToast("Error de conexión al sincronizar", "error")
+    } finally {
+      setSyncingEmail(false)
+      router.refresh()
+    }
   }
 
   async function handleSignOut() {
@@ -71,14 +113,30 @@ export function PanelSidebar({
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-4">
-        <Link
-          href="/panel/upload"
-          onClick={handleNavigate}
-          className="btn btn-primary w-full"
-        >
-          <span className="icon-[tabler--file-upload] size-5" />
-          Subir archivo
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/panel/upload"
+            onClick={handleNavigate}
+            className="btn btn-primary flex-1"
+          >
+            <span className="icon-[tabler--file-upload] size-5" />
+            Subir
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => { handleEmailSync(); handleNavigate() }}
+            className="btn btn-secondary flex-1"
+            disabled={syncingEmail}
+          >
+            {syncingEmail ? (
+              <span className="loading loading-spinner loading-sm" />
+            ) : (
+              <span className="icon-[tabler--mail-check] size-5" />
+            )}
+            {syncingEmail ? "..." : hasEmailConfig ? "Correos" : "Conectar"}
+          </button>
+        </div>
 
         <ul className="menu gap-1 p-0">
           {navLinks.map((link) => (

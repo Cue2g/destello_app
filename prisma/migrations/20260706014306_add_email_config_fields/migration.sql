@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "EmailConfig" ADD COLUMN     "isActive" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "provider" TEXT NOT NULL DEFAULT 'CUSTOM';

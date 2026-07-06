@@ -1,0 +1,20 @@
+import { auth } from "@/auth"
+import { NextResponse } from "next/server"
+import { syncEmails } from "@/lib/services/email-sync"
+
+export const runtime = 'nodejs'
+
+export async function POST() {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+
+  try {
+    const result = await syncEmails(parseInt(session.user.id))
+    return NextResponse.json(result)
+  } catch (err) {
+    console.error("Email sync error:", err)
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 })
+  }
+}

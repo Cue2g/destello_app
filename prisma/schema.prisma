@@ -118,11 +118,13 @@ model EmailConfig {
   id          Int       @id @default(autoincrement())
   userId      Int       @unique
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider    String    @default("CUSTOM")
   host        String
   port        Int       @default(993)
   userEmail   String
   password    String
   useTls      Boolean   @default(true)
+  isActive    Boolean   @default(true)
   lastChecked DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
