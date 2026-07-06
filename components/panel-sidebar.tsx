@@ -77,7 +77,7 @@ export function PanelSidebar({
           className="btn btn-primary w-full"
         >
           <span className="icon-[tabler--file-upload] size-5" />
-          Subir PDF
+          Subir archivo
         </Link>
 
         <ul className="menu gap-1 p-0">

@@ -13,7 +13,7 @@ export function PanelShell({
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       <div
         className={`${
           sidebarOpen ? "w-64" : "w-0 md:w-64"

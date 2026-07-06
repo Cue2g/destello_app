@@ -2,8 +2,9 @@ import { notFound } from "next/navigation"
 import prisma from "@/lib/prisma"
 import { CandidateStatus } from "@/app/generated/prisma/enums"
 import { CandidateSource } from "@/app/generated/prisma/enums"
-import { updateStatus, updateObservations } from "./actions"
 import { DeleteCandidateButton } from "./delete-button"
+import { StatusCard } from "./status-card"
+import { ObservationsCard } from "./observations-card"
 
 type Experience = { title: string; company: string; period: string; description: string }
 type Education = { degree: string; institution: string; year: string }
@@ -286,58 +287,12 @@ export default async function CandidateDetailPage({
             </div>
           )}
 
-          {/* Observations */}
-          <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <span className="icon-[tabler--notes] size-5 text-primary" />
-                Observaciones
-              </h2>
-              <form action={updateObservations.bind(null, candidate.id)} className="mt-3">
-                <textarea
-                  name="observations"
-                  className="textarea textarea-bordered w-full text-sm"
-                  rows={4}
-                  defaultValue={candidate.observations || ""}
-                  placeholder="Notas, seguimiento, comentarios..."
-                />
-                <button type="submit" className="btn btn-primary btn-sm mt-2 w-full">
-                  <span className="icon-[tabler--device-floppy] size-4" />
-                  Guardar observaciones
-                </button>
-              </form>
-            </div>
-          </div>
         </div>
 
         {/* Right column - sidebar */}
         <div className="space-y-6">
-          {/* Status */}
-          <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <span className="icon-[tabler--toggle-left] size-5 text-primary" />
-                Cambiar estado
-              </h2>
-              <form action={updateStatus.bind(null, candidate.id)} className="mt-3 space-y-3">
-                <select
-                  name="status"
-                  className="select select-bordered w-full text-sm"
-                  defaultValue={candidate.status}
-                >
-                  {Object.entries(statusLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-                <button type="submit" className="btn btn-primary w-full btn-sm">
-                  <span className="icon-[tabler--refresh] size-4" />
-                  Actualizar
-                </button>
-              </form>
-            </div>
-          </div>
+          <StatusCard candidateId={candidate.id} currentStatus={candidate.status} />
+          <ObservationsCard candidateId={candidate.id} observations={candidate.observations} />
 
           {/* CV File */}
           {candidate.cvFilePath && (

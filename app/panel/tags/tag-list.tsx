@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { ConfirmDialog, openConfirm } from "@/components/confirm-dialog"
 
 const TAG_COLORS = [
   { name: "Azul", value: "#3b82f6" },
@@ -31,7 +32,7 @@ export function TagList({ tags }: { tags: TagData[] }) {
   const [editName, setEditName] = useState("")
   const [editColor, setEditColor] = useState("")
   const [editPrompt, setEditPrompt] = useState("")
-  const [deleting, setDeleting] = useState<number | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
   const [saving, setSaving] = useState(false)
   const router = useRouter()
 
@@ -65,35 +66,37 @@ export function TagList({ tags }: { tags: TagData[] }) {
     }
   }
 
-  async function handleDelete(id: number) {
-    if (!confirm("¿Eliminar este tag? Se removerá de todos los candidatos.")) return
-    setDeleting(id)
-    const res = await fetch(`/api/tags?id=${id}`, { method: "DELETE" })
-    if (res.ok) router.refresh()
-    setDeleting(null)
+  function requestDelete(id: number) {
+    setDeletingId(id)
+    openConfirm("confirm-tag-delete")
   }
 
-  if (tags.length === 0) {
-    return (
-      <div className="text-center text-base-content/60 py-8">
-        No hay tags creados aún
-      </div>
-    )
+  async function handleDelete() {
+    if (deletingId === null) return
+    const res = await fetch(`/api/tags?id=${deletingId}`, { method: "DELETE" })
+    if (res.ok) router.refresh()
+    setDeletingId(null)
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table w-full">
-        <thead>
-          <tr>
-            <th>Tag</th>
-            <th>Prompt</th>
-            <th>Candidatos</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {tags.map((tag) => (
+    <>
+      {tags.length === 0 ? (
+        <div className="text-center text-base-content/60 py-8">
+          No hay tags creados aún
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table w-full">
+            <thead>
+              <tr>
+                <th>Tag</th>
+                <th>Prompt</th>
+                <th>Candidatos</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tags.map((tag) => (
             <tr key={tag.id}>
               {editingId === tag.id ? (
                 <>
@@ -184,8 +187,7 @@ export function TagList({ tags }: { tags: TagData[] }) {
                       <button
                         type="button"
                         className="btn btn-ghost btn-sm text-error"
-                        onClick={() => handleDelete(tag.id)}
-                        disabled={deleting === tag.id}
+                        onClick={() => requestDelete(tag.id)}
                       >
                         <span className="icon-[tabler--trash] size-4" />
                       </button>
@@ -197,6 +199,16 @@ export function TagList({ tags }: { tags: TagData[] }) {
           ))}
         </tbody>
       </table>
-    </div>
+        </div>
+      )}
+      <ConfirmDialog
+        id="confirm-tag-delete"
+        title="Eliminar tag"
+        message="¿Eliminar este tag? Se removerá de todos los candidatos."
+        confirmText="Eliminar"
+        variant="error"
+        onConfirm={handleDelete}
+      />
+    </>
   )
 }

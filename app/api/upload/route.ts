@@ -2,11 +2,24 @@ import { auth } from "@/auth"
 import { NextRequest, NextResponse } from "next/server"
 import path from "path"
 import fs from "fs/promises"
-import { parseCvPdf, classifyTags } from "@/lib/services/cv-parser"
+import { parseCvFile, classifyTags } from "@/lib/services/cv-parser"
 import { normalizePhone } from "@/lib/services/normalize-phone"
 import prisma from "@/lib/prisma"
 
 export const runtime = 'nodejs'
+
+const mimeTypes: Record<string, string> = {
+  '.pdf': 'application/pdf',
+  '.doc': 'application/msword',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+}
+
+function getMimeType(ext: string): string {
+  return mimeTypes[ext] || 'application/octet-stream'
+}
 
 export async function POST(request: NextRequest) {
   const session = await auth()
@@ -23,8 +36,8 @@ export async function POST(request: NextRequest) {
     }
 
     const ext = path.extname(file.name).toLowerCase()
-    if (!['.pdf', '.docx', '.doc'].includes(ext)) {
-      return NextResponse.json({ error: "Solo se permiten archivos PDF y DOCX" }, { status: 400 })
+    if (!['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg'].includes(ext)) {
+      return NextResponse.json({ error: "Solo se permiten archivos PDF, DOCX, PNG y JPG" }, { status: 400 })
     }
 
     if (file.size > 10 * 1024 * 1024) {
@@ -39,7 +52,8 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer()
     await fs.writeFile(filePath, Buffer.from(bytes))
 
-    const parsed = await parseCvPdf(filePath)
+    const mimeType = getMimeType(ext)
+    const parsed = await parseCvFile(filePath, mimeType)
 
     const existingTags = await prisma.tag.findMany({
       select: { id: true, name: true, color: true, prompt: true },

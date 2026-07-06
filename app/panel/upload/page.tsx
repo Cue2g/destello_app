@@ -40,11 +40,19 @@ export default async function UploadPage({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-2">
           <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title">Subir archivo</h2>
-              <p className="text-sm text-base-content/60">
-                Sube un archivo PDF o DOCX. El sistema extraerá los datos automáticamente.
-              </p>
+            <div className="card-body p-8 gap-8">
+              <header className="flex flex-col items-center gap-3">
+                <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <span className="icon-[tabler--file-upload] size-7" />
+                </div>
+                <div className="text-center">
+                  <h2 className="card-title">Subir archivo</h2>
+                  <p className="text-sm text-base-content/60 mt-1">
+                    Sube un archivo PDF, DOCX o imagen (PNG/JPG). El sistema extraerá los datos automáticamente.
+                  </p>
+                </div>
+              </header>
+              <div className="divider my-0" />
               <UploadForm />
             </div>
           </div>
@@ -55,7 +63,10 @@ export default async function UploadPage({
             <div className="card-body p-0">
               <div className="px-6 py-4 border-b border-base-300 flex items-center justify-between">
                 <h2 className="card-title">Candidatos subidos</h2>
-                <span className="badge">{candidates.length}</span>
+                <span className="badge gap-1">
+                  <span className="icon-[tabler--upload] size-3.5" />
+                  {candidates.length}
+                </span>
               </div>
               <div className="overflow-x-auto">
                 <table className="table w-full">
@@ -72,8 +83,13 @@ export default async function UploadPage({
                   <tbody>
                     {candidates.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="text-center text-base-content/60 py-8">
-                          Sin CVs subidos aún
+                        <td colSpan={6}>
+                          <div className="flex flex-col items-center py-12 text-base-content/60">
+                            <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/40 mb-3">
+                              <span className="icon-[tabler--file-upload] size-6" />
+                            </div>
+                            <p className="text-sm">Sin CVs subidos aún</p>
+                          </div>
                         </td>
                       </tr>
                     )}

@@ -25,14 +25,14 @@ export function CandidateFilters({
   }
 
   return (
-    <form id="candidate-filters" className="flex flex-wrap gap-3">
+    <form id="candidate-filters" className="flex flex-wrap gap-3 items-center">
       <select
         name="source"
-        className="select select-bordered select-sm"
-        defaultValue={source}
+        value={source}
         onChange={applyFilter}
+        className="select select-sm w-auto"
       >
-        <option value="">Todas las fuentes</option>
+        <option value="">Todos</option>
         <option value="WHATSAPP">WhatsApp</option>
         <option value="EMAIL">Email</option>
         <option value="UPLOAD">Upload</option>
@@ -40,11 +40,11 @@ export function CandidateFilters({
 
       <select
         name="status"
-        className="select select-bordered select-sm"
-        defaultValue={status}
+        value={status}
         onChange={applyFilter}
+        className="select select-sm w-auto"
       >
-        <option value="">Todos los estados</option>
+        <option value="">Todos</option>
         <option value="NEW">Nuevo</option>
         <option value="REVIEWED">Revisado</option>
         <option value="CONTACTED">Contactado</option>

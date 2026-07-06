@@ -55,7 +55,7 @@ export default async function CandidatesPage({
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="space-y-4">
         <h1 className="text-2xl font-bold">Candidatos</h1>
         <CandidateFilters source={source} status={status} />
       </div>
@@ -85,6 +85,7 @@ export default async function CandidatesPage({
                   <th>Estado</th>
                   <th>Tags</th>
                   <th>Fecha</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -139,6 +140,14 @@ export default async function CandidatesPage({
                     </td>
                     <td className="text-xs text-base-content/50 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("es-VE")}
+                    </td>
+                    <td>
+                      <Link
+                        href={`/panel/candidates/${c.id}`}
+                        className="btn btn-sm btn-ghost"
+                      >
+                        Ver
+                      </Link>
                     </td>
                   </tr>
                 ))}

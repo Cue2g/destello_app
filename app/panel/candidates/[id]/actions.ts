@@ -18,6 +18,8 @@ export async function updateStatus(id: number, formData: FormData) {
   })
 
   revalidatePath(`/panel/candidates/${id}`)
+  revalidatePath("/panel/candidates")
+  revalidatePath("/panel/upload")
 }
 
 export async function updateObservations(id: number, formData: FormData) {
@@ -28,6 +30,8 @@ export async function updateObservations(id: number, formData: FormData) {
   })
 
   revalidatePath(`/panel/candidates/${id}`)
+  revalidatePath("/panel/candidates")
+  revalidatePath("/panel/upload")
 }
 
 export async function deleteCandidate(id: number) {
@@ -48,4 +52,5 @@ export async function deleteCandidate(id: number) {
   await prisma.candidate.delete({ where: { id } })
 
   revalidatePath("/panel/candidates")
+  revalidatePath("/panel/upload")
 }

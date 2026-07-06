@@ -99,7 +99,7 @@ const CV_SCHEMA = {
   },
 }
 
-export async function parseCvPdf(filePath: string): Promise<CvParseResult> {
+export async function parseCvFile(filePath: string, mimeType: string): Promise<CvParseResult> {
   if (!process.env.GEMINI_API_KEY) {
     throw new Error('GEMINI_API_KEY not set')
   }
@@ -110,7 +110,7 @@ export async function parseCvPdf(filePath: string): Promise<CvParseResult> {
   const response = await getClient().models.generateContent({
     model: MODEL,
     contents: [
-      { role: 'user', parts: [{ inlineData: { mimeType: 'application/pdf', data: base64 } }] },
+      { role: 'user', parts: [{ inlineData: { mimeType, data: base64 } }] },
     ],
     config: {
       systemInstruction: SYSTEM_PROMPT,

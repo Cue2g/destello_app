@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 
 type TagInfo = { id: number; name: string; color: string }
@@ -28,13 +28,45 @@ type PreviewData = ParsedData & {
   rawText: string
 }
 
+const ACCEPTED_TYPES = ['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg']
+
+function getFileIcon(name: string): string {
+  const ext = name.split('.').pop()?.toLowerCase()
+  if (ext === 'pdf') return 'tabler--file-type-pdf'
+  if (['doc', 'docx'].includes(ext || '')) return 'tabler--file-text'
+  if (['png', 'jpg', 'jpeg'].includes(ext || '')) return 'tabler--photo'
+  return 'tabler--file'
+}
+
 export function UploadForm() {
   const [pending, setPending] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [preview, setPreview] = useState<PreviewData | null>(null)
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
+  const [dragOver, setDragOver] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  function setInputFile(file: File) {
+    const dt = new DataTransfer()
+    dt.items.add(file)
+    if (fileInputRef.current) {
+      fileInputRef.current.files = dt.files
+    }
+  }
+
+  function handleFile(file: File) {
+    const ext = '.' + file.name.split('.').pop()?.toLowerCase()
+    if (!ACCEPTED_TYPES.includes(ext)) {
+      setError("Formato no soportado. Usa PDF, DOCX, PNG o JPG.")
+      return
+    }
+    setError(null)
+    setSelectedFile(file)
+    setInputFile(file)
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -118,6 +150,8 @@ export function UploadForm() {
 
     setPreview(null)
     setSelectedTagIds([])
+    setSelectedFile(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
     router.push("/panel/upload?created=1")
     router.refresh()
   }
@@ -224,26 +258,111 @@ export function UploadForm() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {error && (
           <div className="text-sm text-error flex items-center gap-1">
-            <span className="icon-[tabler--alert-circle] size-4" />
+            <span className="icon-[tabler--alert-circle] size-4 shrink-0" />
             {error}
           </div>
         )}
-        <div>
+
+        <div
+          className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+            dragOver
+              ? 'border-primary bg-primary/5'
+              : 'border-base-300 hover:border-primary/50'
+          }`}
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault()
+            setDragOver(false)
+            const file = e.dataTransfer.files[0]
+            if (file) handleFile(file)
+          }}
+          onClick={() => fileInputRef.current?.click()}
+        >
           <input
+            ref={fileInputRef}
             type="file"
             name="file"
-            accept=".pdf,.docx,.doc"
-            className="file-input w-full"
+            accept=".pdf,.docx,.doc,.png,.jpg,.jpeg"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) handleFile(e.target.files[0])
+            }}
             required
           />
-          <p className="text-xs text-base-content/60 mt-1">
-            PDF o DOCX, máximo 10MB
-          </p>
+
+          {pending && (
+            <div className="absolute inset-0 bg-base-100/60 rounded-xl flex items-center justify-center z-10">
+              <div className="flex flex-col items-center gap-2">
+                <span className="icon-[tabler--loader-2] size-7 text-primary animate-spin" />
+                <span className="text-sm text-base-content/60 font-medium">Procesando archivo...</span>
+              </div>
+            </div>
+          )}
+
+          {selectedFile && !pending ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <span className={`icon-[${getFileIcon(selectedFile.name)}] size-7`} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-base-content">{selectedFile.name}</p>
+                <p className="text-xs text-base-content/60 mt-0.5">
+                  {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
+                </p>
+              </div>
+              <button
+                type="button"
+                className="text-xs text-primary hover:underline"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedFile(null)
+                  setError(null)
+                  if (fileInputRef.current) fileInputRef.current.value = ''
+                }}
+              >
+                Cambiar archivo
+              </button>
+            </div>
+          ) : !pending ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <span className="icon-[tabler--file-upload] size-7" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-base-content">
+                  Arrastra tu archivo aquí
+                </p>
+                <p className="text-xs text-base-content/60 mt-1">
+                  o haz clic para seleccionar
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-1">
+                <span className="badge badge-sm gap-1">
+                  <span className="icon-[tabler--file-type-pdf] size-3.5" />
+                  PDF
+                </span>
+                <span className="badge badge-sm gap-1">
+                  <span className="icon-[tabler--file-text] size-3.5" />
+                  DOCX
+                </span>
+                <span className="badge badge-sm gap-1">
+                  <span className="icon-[tabler--photo] size-3.5" />
+                  PNG
+                </span>
+                <span className="badge badge-sm gap-1">
+                  <span className="icon-[tabler--photo] size-3.5" />
+                  JPG
+                </span>
+              </div>
+            </div>
+          ) : null}
         </div>
+
         <button
           type="submit"
-          className="btn btn-primary"
-          disabled={pending}
+          className="btn btn-primary w-full"
+          disabled={pending || !selectedFile}
         >
           <span className="icon-[tabler--file-upload] size-5" />
           {pending ? "Procesando..." : "Subir y procesar"}
