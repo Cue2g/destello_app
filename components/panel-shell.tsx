@@ -46,11 +46,11 @@ export function PanelShell({
       </button>
 
       <main
-        className={`flex-1 bg-base-200 p-6 overflow-auto ${
+        className={`flex-1 bg-base-200 overflow-auto ${
           sidebarOpen ? "max-md:pt-20" : "max-md:pt-20"
         }`}
       >
-        {children}
+        <div className="p-6 lg:p-8">{children}</div>
       </main>
     </div>
   )

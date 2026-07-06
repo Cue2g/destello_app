@@ -59,27 +59,23 @@ export function StatusCard({ candidateId, currentStatus }: StatusCardProps) {
 
   return (
     <>
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <span className="icon-[tabler--toggle-left] size-5 text-primary" />
-            Cambiar estado
-          </h2>
-          <div className="mt-3">
-            <select
-              className="select select-bordered w-full text-sm"
-              value={selectValue}
-              onChange={handleChange}
-              disabled={pending}
-            >
-              {Object.entries(statusLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+      <div className="border border-base-300 bg-base-100 rounded-lg p-5">
+        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-4 flex items-center gap-2">
+          <span className="icon-[tabler--toggle-left] size-4 text-primary" />
+          Cambiar estado
+        </h2>
+        <select
+          className="select select-bordered w-full text-sm"
+          value={selectValue}
+          onChange={handleChange}
+          disabled={pending}
+        >
+          {Object.entries(statusLabels).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
       </div>
       <ConfirmDialog
         id="confirm-status"

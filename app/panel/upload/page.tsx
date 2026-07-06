@@ -8,21 +8,22 @@ export default async function UploadPage() {
 
   return (
     <div className="flex items-center justify-center p-4">
-      <div className="card bg-base-100 shadow-xl w-full max-w-sm">
-        <div className="card-body p-8 gap-8">
+      <div className="w-full max-w-sm">
+        <div className="flex flex-col items-center gap-6">
           <header className="flex flex-col items-center gap-3">
-            <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <span className="icon-[tabler--file-upload] size-7" />
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="icon-[tabler--file-upload] size-5" />
             </div>
             <div className="text-center">
-              <h1 className="text-2xl font-bold">Subir CV</h1>
-              <p className="text-sm text-base-content/60 mt-1">
-                Sube un archivo PDF, DOCX o imagen (PNG/JPG). El sistema extraerá los datos automáticamente.
+              <h1 className="text-lg font-bold tracking-tight">Subir CV</h1>
+              <p className="text-xs text-base-content/50 mt-1">
+                PDF, DOCX o imagen. Extraemos los datos automáticamente.
               </p>
             </div>
           </header>
-          <div className="divider my-0" />
-          <UploadForm />
+          <div className="border border-base-300 bg-base-100 rounded-lg w-full p-6">
+            <UploadForm />
+          </div>
         </div>
       </div>
     </div>

@@ -53,36 +53,34 @@ export default async function PanelDashboard() {
   ) as Record<CandidateStatus, number>
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="max-w-4xl mx-auto space-y-10">
+      <h1 className="text-lg font-bold tracking-tight">Dashboard</h1>
 
       {/* Total */}
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body items-center text-center gap-2">
-          <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <span className="icon-[tabler--users-group] size-7" />
-          </div>
-          <p className="text-4xl font-bold">{total}</p>
-          <p className="text-sm text-base-content/60">Candidatos totales</p>
+      <div className="border border-base-300 bg-base-100 rounded-lg p-6 flex items-center gap-5">
+        <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+          <span className="icon-[tabler--users-group] size-6" />
+        </div>
+        <div>
+          <p className="text-3xl font-bold tracking-tight">{total}</p>
+          <p className="text-xs text-base-content/50 mt-0.5">Candidatos totales</p>
         </div>
       </div>
 
       {/* Por plataforma */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">Por plataforma</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-4">Por plataforma</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {(Object.keys(sourceLabels) as CandidateSource[]).map((src) => (
-            <div key={src} className="card bg-base-100 shadow-xl">
-              <div className="card-body items-center text-center gap-2">
-                <div
-                  className={`flex size-12 items-center justify-center rounded-full ${sourceColors[src]}`}
-                >
-                  <span className={`${sourceIcons[src]} size-6`} />
-                </div>
-                <p className="text-3xl font-bold">{sourceCounts[src] ?? 0}</p>
-                <p className="text-sm text-base-content/60">
-                  {sourceLabels[src]}
-                </p>
+            <div key={src} className="border border-base-300 bg-base-100 rounded-lg p-5 flex items-center gap-4">
+              <div
+                className={`flex size-10 items-center justify-center rounded-full shrink-0 ${sourceColors[src]}`}
+              >
+                <span className={`${sourceIcons[src]} size-5`} />
+              </div>
+              <div>
+                <p className="text-xl font-bold tracking-tight">{sourceCounts[src] ?? 0}</p>
+                <p className="text-xs text-base-content/50">{sourceLabels[src]}</p>
               </div>
             </div>
           ))}
@@ -91,37 +89,35 @@ export default async function PanelDashboard() {
 
       {/* Por estado - pipeline */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">Pipeline de candidatos</h2>
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 sm:gap-0">
-              {pipelineOrder.map((st, i) => (
-                <div key={st} className="flex flex-col sm:flex-row items-center gap-2 sm:gap-0">
-                  {i > 0 && (
-                    <>
-                      <span className="sm:hidden text-base-content/30">
-                        <span className="icon-[tabler--chevron-down] size-5" />
-                      </span>
-                      <span className="hidden sm:block text-base-content/30">
-                        <span className="icon-[tabler--chevron-right] size-6" />
-                      </span>
-                    </>
-                  )}
-                  <div className="flex flex-col items-center gap-2">
-                    <div
-                      className={`flex size-14 items-center justify-center rounded-full border-2 ${statusColors[st]}`}
-                    >
-                      <span className="text-lg font-bold">
-                        {statusCounts[st] ?? 0}
-                      </span>
-                    </div>
-                    <span className="text-xs text-base-content/60 font-medium whitespace-nowrap">
-                      {statusLabels[st]}
+        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-4">Pipeline de candidatos</h2>
+        <div className="border border-base-300 bg-base-100 rounded-lg p-6">
+          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3 sm:gap-0">
+            {pipelineOrder.map((st, i) => (
+              <div key={st} className="flex flex-col sm:flex-row items-center gap-3 sm:gap-0">
+                {i > 0 && (
+                  <>
+                    <span className="sm:hidden text-base-content/20">
+                      <span className="icon-[tabler--chevron-down] size-4" />
+                    </span>
+                    <span className="hidden sm:block text-base-content/20">
+                      <span className="icon-[tabler--chevron-right] size-5" />
+                    </span>
+                  </>
+                )}
+                <div className="flex flex-col items-center gap-2">
+                  <div
+                    className={`flex size-12 items-center justify-center rounded-full border ${statusColors[st]}`}
+                  >
+                    <span className="text-sm font-bold">
+                      {statusCounts[st] ?? 0}
                     </span>
                   </div>
+                  <span className="text-[11px] text-base-content/50 font-medium whitespace-nowrap">
+                    {statusLabels[st]}
+                  </span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

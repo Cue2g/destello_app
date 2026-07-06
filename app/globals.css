@@ -6,47 +6,10 @@
 @import "../node_modules/flyonui/src/vendor/notyf.css";
 @source "./node_modules/flyonui/flyonui.js";
 
-:root {
-  color-scheme: light;
-
-  --color-primary: oklch(62.4% 0.052 177.6);
-  --color-primary-content: oklch(100% 0 0);
-  --color-secondary: oklch(75.4% 0.066 164);
-  --color-secondary-content: oklch(20% 0.03 170);
-  --color-accent: oklch(83.5% 0.051 152.3);
-  --color-accent-content: oklch(20% 0.03 170);
-
-  --color-trust: oklch(48% 0.18 265);
-  --color-trust-content: oklch(100% 0 0);
-
-  --color-base-100: oklch(100% 0 0);
-  --color-base-200: oklch(94.6% 0.031 131.5);
-  --color-base-300: oklch(82% 0.04 145);
-  --color-base-content: oklch(20% 0.03 170);
-
-  --color-neutral: oklch(25% 0.02 170);
-  --color-neutral-content: oklch(96% 0.01 140);
-
-  --color-info: oklch(71.5% 0.126 215);
-  --color-info-content: oklch(98.4% 0.019 201);
-  --color-success: oklch(73.1% 0.217 147);
-  --color-success-content: oklch(98.1% 0.014 174);
-  --color-warning: oklch(79.9% 0.164 73);
-  --color-warning-content: oklch(99.3% 0.011 95);
-  --color-error: oklch(65.4% 0.222 26);
-  --color-error-content: oklch(98.8% 0.009 68);
-
-  --radius-selector: 0.25rem;
-  --radius-field: 0.375rem;
-  --radius-box: 0.75rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 1;
-  --noise: 0;
+@theme {
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-.btn-trust {
-  --btn-color: var(--color-trust);
-  --btn-fg: var(--color-trust-content);
+body {
+  font-family: var(--font-mono);
 }

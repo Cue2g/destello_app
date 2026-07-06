@@ -147,58 +147,56 @@ export default function ConnectionsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold">Conexiones</h1>
+    <div className="max-w-2xl mx-auto space-y-8">
+      <h1 className="text-lg font-bold tracking-tight">Conexiones</h1>
 
       {config ? (
         // Estado y Sincronización (cuando hay config)
-        <div className="card w-full bg-base-100 shadow-xl">
-          <div className="card-body p-8 gap-8">
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex size-14 items-center justify-center rounded-full bg-success/10 text-success">
-                <span className="icon-[tabler--mail-check] size-7" />
-              </div>
-              <h2 className="text-xl font-bold">Cuenta conectada</h2>
-              <p className="text-sm text-base-content/60 mt-1">{config.userEmail}</p>
+        <div className="border border-base-300 bg-base-100 rounded-lg p-6">
+          <div className="flex flex-col items-center gap-3 mb-6">
+            <div className="flex size-10 items-center justify-center rounded-full bg-success/10 text-success">
+              <span className="icon-[tabler--mail-check] size-5" />
             </div>
-
-            <div className="flex flex-col gap-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-base-content/60">Estado:</span>
-                <span className={`font-medium ${config.isActive ? 'text-success' : 'text-base-content/40'}`}>
-                  {config.isActive ? 'Activo' : 'Inactivo'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-base-content/60">Proveedor:</span>
-                <span className="font-medium">{config.provider === 'GMAIL' ? 'Gmail' : 'Correo personalizado'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-base-content/60">Última revisión:</span>
-                <span className="font-medium">
-                  {config.lastChecked
-                    ? new Date(config.lastChecked).toLocaleString('es-ES')
-                    : 'Nunca'}
-                </span>
-              </div>
+            <div className="text-center">
+              <h2 className="text-sm font-semibold">Cuenta conectada</h2>
+              <p className="text-xs text-base-content/50 mt-0.5">{config.userEmail}</p>
             </div>
-
-            <div className="divider my-0" />
-
-            <button
-              type="button"
-              className="btn btn-outline btn-error w-full mt-1"
-              onClick={handleDisconnectClick}
-              disabled={disconnecting}
-            >
-              {disconnecting ? (
-                <span className="loading loading-spinner loading-sm" />
-              ) : (
-                <span className="icon-[tabler--plug-off] size-5" />
-              )}
-              {disconnecting ? "Desconectando..." : "Desconectar cuenta"}
-            </button>
           </div>
+
+          <div className="flex flex-col gap-2 text-xs text-base-content/60 mb-6">
+            <div className="flex justify-between py-1">
+              <span>Estado</span>
+              <span className={`font-medium ${config.isActive ? 'text-success' : 'text-base-content/30'}`}>
+                {config.isActive ? 'Activo' : 'Inactivo'}
+              </span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span>Proveedor</span>
+              <span className="font-medium">{config.provider === 'GMAIL' ? 'Gmail' : 'Correo personalizado'}</span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span>Última revisión</span>
+              <span className="font-medium">
+                {config.lastChecked
+                  ? new Date(config.lastChecked).toLocaleString('es-ES')
+                  : 'Nunca'}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-outline btn-error btn-sm w-full"
+            onClick={handleDisconnectClick}
+            disabled={disconnecting}
+          >
+            {disconnecting ? (
+              <span className="loading loading-spinner loading-sm" />
+            ) : (
+              <span className="icon-[tabler--plug-off] size-4" />
+            )}
+            {disconnecting ? "Desconectando..." : "Desconectar cuenta"}
+          </button>
 
           <ConfirmDialog
             id="disconnect-dialog"
@@ -212,140 +210,140 @@ export default function ConnectionsPage() {
         </div>
       ) : (
         // Configuración de Email (cuando no hay config)
-        <div className="card w-full bg-base-100 shadow-xl">
-          <div className="card-body p-8 gap-8">
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <span className="icon-[tabler--mail] size-7" />
-              </div>
-              <h2 className="text-xl font-bold">Configuración de Email</h2>
-              <p className="text-sm text-base-content/60 mt-1">
+        <div className="border border-base-300 bg-base-100 rounded-lg p-6">
+          <div className="flex flex-col items-center gap-3 mb-6">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="icon-[tabler--mail] size-5" />
+            </div>
+            <div className="text-center">
+              <h2 className="text-sm font-semibold">Configuración de Email</h2>
+              <p className="text-xs text-base-content/50 mt-0.5">
                 Configura una cuenta IMAP para recibir CVs por correo
               </p>
-              <button
-                type="button"
-                className="text-xs text-primary hover:underline flex items-center gap-1 mt-1"
-                onClick={() => setShowIntro(true)}
+            </div>
+            <button
+              type="button"
+              className="text-[11px] text-primary hover:underline flex items-center gap-1"
+              onClick={() => setShowIntro(true)}
+            >
+              <span className="icon-[tabler--help-circle] size-3.5" />
+              ¿Cómo configurar?
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-5">
+            <div className="input-floating">
+              <select
+                id="email-provider"
+                className="select"
+                value={provider}
+                onChange={(e) => handleProviderChange(e.target.value)}
               >
-                <span className="icon-[tabler--help-circle] size-4" />
-                ¿Cómo configurar?
-              </button>
+                <option value="CUSTOM">Correo personalizado</option>
+                <option value="GMAIL">Gmail</option>
+              </select>
+              <label htmlFor="email-provider" className="input-floating-label">
+                Proveedor
+              </label>
             </div>
 
-            <div className="flex flex-col gap-5">
-              <div className="input-floating">
-                <select
-                  id="email-provider"
-                  className="select"
-                  value={provider}
-                  onChange={(e) => handleProviderChange(e.target.value)}
-                >
-                  <option value="CUSTOM">Correo personalizado</option>
-                  <option value="GMAIL">Gmail</option>
-                </select>
-                <label htmlFor="email-provider" className="input-floating-label">
-                  Proveedor
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="input-floating">
-                  <input
-                    id="email-host"
-                    type="text"
-                    className="input"
-                    placeholder=""
-                    value={host}
-                    onChange={(e) => { setHost(e.target.value); setHasChanges(true) }}
-                    required
-                  />
-                  <label htmlFor="email-host" className="input-floating-label">
-                    Servidor IMAP
-                  </label>
-                </div>
-
-                <div className="input-floating">
-                  <input
-                    id="email-port"
-                    type="number"
-                    className="input"
-                    placeholder=""
-                    value={port}
-                    onChange={(e) => { setPort(e.target.value); setHasChanges(true) }}
-                    required
-                  />
-                  <label htmlFor="email-port" className="input-floating-label">
-                    Puerto
-                  </label>
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="input-floating">
                 <input
-                  id="email-user"
-                  type="email"
+                  id="email-host"
+                  type="text"
                   className="input"
                   placeholder=""
-                  value={userEmail}
-                  onChange={(e) => { setUserEmail(e.target.value); setHasChanges(true) }}
+                  value={host}
+                  onChange={(e) => { setHost(e.target.value); setHasChanges(true) }}
                   required
                 />
-                <label htmlFor="email-user" className="input-floating-label">
-                  Correo electrónico
+                <label htmlFor="email-host" className="input-floating-label">
+                  Servidor IMAP
                 </label>
               </div>
 
               <div className="input-floating">
                 <input
-                  id="email-password"
-                  type="password"
+                  id="email-port"
+                  type="number"
                   className="input"
                   placeholder=""
-                  value={password}
-                  onChange={(e) => { setPassword(e.target.value); setHasChanges(true) }}
+                  value={port}
+                  onChange={(e) => { setPort(e.target.value); setHasChanges(true) }}
                   required
                 />
-                <label htmlFor="email-password" className="input-floating-label">
-                  Contraseña
+                <label htmlFor="email-port" className="input-floating-label">
+                  Puerto
                 </label>
               </div>
-
-              <div className="flex flex-wrap gap-5">
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-primary"
-                    checked={useTls}
-                    onChange={(e) => { setUseTls(e.target.checked); setHasChanges(true) }}
-                  />
-                  <span className="text-sm">Usar TLS</span>
-                </label>
-
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-primary"
-                    checked={isActive}
-                    onChange={(e) => { setIsActive(e.target.checked); setHasChanges(true) }}
-                  />
-                  <span className="text-sm">Activo</span>
-                </label>
-              </div>
-
-              <button
-                type="button"
-                className="btn btn-primary w-full mt-1"
-                onClick={handleSave}
-                disabled={saving}
-              >
-                {saving ? (
-                  <span className="loading loading-spinner loading-sm" />
-                ) : (
-                  <span className="icon-[tabler--device-floppy] size-5" />
-                )}
-                {saving ? "Guardando..." : "Guardar configuración"}
-              </button>
             </div>
+
+            <div className="input-floating">
+              <input
+                id="email-user"
+                type="email"
+                className="input"
+                placeholder=""
+                value={userEmail}
+                onChange={(e) => { setUserEmail(e.target.value); setHasChanges(true) }}
+                required
+              />
+              <label htmlFor="email-user" className="input-floating-label">
+                Correo electrónico
+              </label>
+            </div>
+
+            <div className="input-floating">
+              <input
+                id="email-password"
+                type="password"
+                className="input"
+                placeholder=""
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setHasChanges(true) }}
+                required
+              />
+              <label htmlFor="email-password" className="input-floating-label">
+                Contraseña
+              </label>
+            </div>
+
+            <div className="flex flex-wrap gap-5">
+              <label className="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={useTls}
+                  onChange={(e) => { setUseTls(e.target.checked); setHasChanges(true) }}
+                />
+                <span className="text-xs">Usar TLS</span>
+              </label>
+
+              <label className="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={isActive}
+                  onChange={(e) => { setIsActive(e.target.checked); setHasChanges(true) }}
+                />
+                <span className="text-xs">Activo</span>
+              </label>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-primary btn-sm w-full"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? (
+                <span className="loading loading-spinner loading-sm" />
+              ) : (
+                <span className="icon-[tabler--device-floppy] size-4" />
+              )}
+              {saving ? "Guardando..." : "Guardar configuración"}
+            </button>
           </div>
         </div>
       )}

@@ -102,43 +102,45 @@ export function PanelSidebar({
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-base-300 bg-base-100">
-      <div className="flex h-16 items-center px-6">
+      <div className="flex h-14 items-center px-5">
         <Link
           href="/panel"
           onClick={handleNavigate}
-          className="link text-base-content link-neutral text-xl font-bold no-underline"
+          className="text-sm font-bold tracking-tight text-base-content no-underline"
         >
           Destello
         </Link>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-4">
+      <div className="px-3 mb-3">
         <div className="flex gap-2">
           <Link
             href="/panel/upload"
             onClick={handleNavigate}
-            className="btn btn-primary flex-1"
+            className="btn btn-primary btn-sm flex-1 gap-1.5"
           >
-            <span className="icon-[tabler--file-upload] size-5" />
+            <span className="icon-[tabler--file-upload] size-4" />
             Subir
           </Link>
 
           <button
             type="button"
             onClick={() => { handleEmailSync(); handleNavigate() }}
-            className="btn btn-secondary flex-1"
+            className="btn btn-outline btn-sm flex-1 gap-1.5"
             disabled={syncingEmail}
           >
             {syncingEmail ? (
               <span className="loading loading-spinner loading-sm" />
             ) : (
-              <span className="icon-[tabler--mail-check] size-5" />
+              <span className="icon-[tabler--mail-check] size-4" />
             )}
             {syncingEmail ? "..." : hasEmailConfig ? "Correos" : "Conectar"}
           </button>
         </div>
+      </div>
 
-        <ul className="menu gap-1 p-0">
+      <nav className="flex-1 px-3">
+        <ul className="menu gap-0.5 p-0 text-sm">
           {navLinks.map((link) => (
             <li key={link.href}>
               <Link
@@ -146,7 +148,7 @@ export function PanelSidebar({
                 onClick={handleNavigate}
                 className={isActive(link.href, link.exact) ? "active" : ""}
               >
-                <span className={`${link.icon} size-5`} />
+                <span className={`${link.icon} size-4`} />
                 {link.label}
               </Link>
             </li>
@@ -154,20 +156,20 @@ export function PanelSidebar({
         </ul>
       </nav>
 
-      <div className="border-t border-base-300 px-3 py-4 space-y-2">
+      <div className="border-t border-base-300 px-3 py-3">
         <div className="px-3 py-2">
-          <p className="text-sm font-medium text-base-content truncate">
+          <p className="text-xs text-base-content/50 truncate">
             {userName || "Usuario"}
           </p>
         </div>
-        <ul className="menu gap-1 p-0">
+        <ul className="menu gap-0.5 p-0 text-sm">
           <li>
             <button
               type="button"
               onClick={handleSignOut}
-              className="w-full text-left text-error"
+              className="w-full text-left text-base-content/50 hover:text-error"
             >
-              <span className="icon-[tabler--logout] size-5" />
+              <span className="icon-[tabler--logout] size-4" />
               Cerrar sesión
             </button>
           </li>

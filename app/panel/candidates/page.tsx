@@ -55,18 +55,18 @@ export default async function CandidatesPage({
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Candidatos</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-bold tracking-tight">Candidatos</h1>
         <CandidateFilters source={source} status={status} />
       </div>
 
       {candidates.length === 0 ? (
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body items-center text-center py-12">
-            <div className="flex size-14 items-center justify-center rounded-full bg-base-200 text-base-content/40">
-              <span className="icon-[tabler--users] size-7" />
+        <div className="border border-base-300 bg-base-100 rounded-lg">
+          <div className="flex flex-col items-center justify-center py-16 gap-4">
+            <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/30">
+              <span className="icon-[tabler--users] size-6" />
             </div>
-            <p className="text-base-content/60 mt-4 text-sm">
+            <p className="text-sm text-base-content/50">
               {source || status
                 ? "No se encontraron candidatos con esos filtros."
                 : "No hay candidatos registrados aún."}
@@ -74,35 +74,35 @@ export default async function CandidatesPage({
           </div>
         </div>
       ) : (
-        <div className="card bg-base-100 shadow-xl">
+        <div className="border border-base-300 bg-base-100 rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="table table-sm">
               <thead>
-                <tr className="text-xs text-base-content/40 uppercase tracking-wider">
+                <tr className="text-[11px] text-base-content/40 uppercase tracking-wider border-b border-base-300">
                   <th>Nombre</th>
                   <th>Contacto</th>
                   <th>Fuente</th>
                   <th>Estado</th>
                   <th>Tags</th>
                   <th>Fecha</th>
-                  <th>Acciones</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {candidates.map((c) => (
-                  <tr key={c.id} className="hover:bg-base-200/50">
+                  <tr key={c.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0">
                     <td>
                       <Link
                         href={`/panel/candidates/${c.id}`}
-                        className="font-medium text-sm text-base-content link link-hover"
+                        className="font-medium text-sm text-base-content"
                       >
                         {c.name || "Sin nombre"}
                       </Link>
                     </td>
                     <td>
-                      <div className="text-sm text-base-content/70 space-y-0.5">
-                        {c.email && <div className="truncate max-w-40">{c.email}</div>}
-                        {c.phone && <div className="text-xs">{c.phone}</div>}
+                      <div className="text-xs text-base-content/60 space-y-0.5">
+                        {c.email && <div className="truncate max-w-36">{c.email}</div>}
+                        {c.phone && <div className="text-[11px]">{c.phone}</div>}
                       </div>
                     </td>
                     <td>
@@ -118,7 +118,7 @@ export default async function CandidatesPage({
                     <td>
                       <div className="flex flex-wrap gap-1">
                         {c.tags.length === 0 && (
-                          <span className="text-xs text-base-content/30">—</span>
+                          <span className="text-[11px] text-base-content/20">—</span>
                         )}
                         {c.tags.slice(0, 3).map((tag) => (
                           <span
@@ -134,17 +134,17 @@ export default async function CandidatesPage({
                           </span>
                         ))}
                         {c.tags.length > 3 && (
-                          <span className="text-xs text-base-content/40">+{c.tags.length - 3}</span>
+                          <span className="text-[11px] text-base-content/40">+{c.tags.length - 3}</span>
                         )}
                       </div>
                     </td>
-                    <td className="text-xs text-base-content/50 whitespace-nowrap">
+                    <td className="text-[11px] text-base-content/40 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("es-VE")}
                     </td>
                     <td>
                       <Link
                         href={`/panel/candidates/${c.id}`}
-                        className="btn btn-sm btn-ghost"
+                        className="btn btn-ghost btn-xs"
                       >
                         Ver
                       </Link>

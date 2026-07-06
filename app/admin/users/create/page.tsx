@@ -4,21 +4,21 @@ import { createUser } from "@/lib/actions/create-user"
 export default function CreateUserPage() {
   return (
     <div className="flex items-center justify-center">
-      <div className="card w-full max-w-sm bg-base-100 shadow-xl">
-        <div className="card-body p-8 gap-8">
+      <div className="w-full max-w-sm">
+        <div className="flex flex-col items-center gap-6">
           <header className="flex flex-col items-center gap-3">
-            <div className="flex size-14 items-center justify-center rounded-full bg-trust/10 text-trust">
-              <span className="icon-[tabler--user-plus] size-7" />
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="icon-[tabler--user-plus] size-5" />
             </div>
             <div className="text-center">
-              <h1 className="text-2xl font-bold">Crear usuario</h1>
-              <p className="text-sm text-base-content/60 mt-1">
+              <h1 className="text-lg font-bold tracking-tight">Crear usuario</h1>
+              <p className="text-xs text-base-content/50 mt-1">
                 Nuevo usuario del sistema
               </p>
             </div>
           </header>
 
-          <div className="divider my-0" />
+          <div className="border border-base-300 bg-base-100 rounded-lg w-full p-6">
 
           <form
             action={async (formData: FormData) => {
@@ -84,12 +84,13 @@ export default function CreateUserPage() {
               </label>
             </div>
 
-            <button type="submit" className="btn btn-trust mt-1">
+            <button type="submit" className="btn btn-primary mt-1">
               Crear usuario
             </button>
           </form>
         </div>
       </div>
+    </div>
     </div>
   )
 }

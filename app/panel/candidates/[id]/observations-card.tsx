@@ -44,70 +44,68 @@ export function ObservationsCard({ candidateId, observations }: ObservationsCard
   }
 
   return (
-    <div className="card bg-base-100 shadow-xl">
-      <div className="card-body">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <span className="icon-[tabler--notes] size-5 text-primary" />
-            Observaciones
-          </h2>
-          {!isEditing && (
-            <button
-              type="button"
-              className="btn btn-ghost btn-xs"
-              onClick={handleEdit}
-              disabled={pending}
-            >
-              <span className="icon-[tabler--pencil] size-3.5" />
-              Editar
-            </button>
-          )}
-        </div>
-
-        {isEditing ? (
-          <div className="mt-3 space-y-2">
-            <textarea
-              className="textarea textarea-bordered w-full text-sm"
-              rows={4}
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              placeholder="Notas, seguimiento, comentarios..."
-              disabled={pending}
-            />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className="btn btn-ghost btn-sm flex-1"
-                onClick={handleCancel}
-                disabled={pending}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary btn-sm flex-1"
-                onClick={handleSave}
-                disabled={pending}
-              >
-                <span className="icon-[tabler--device-floppy] size-4" />
-                Guardar
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-3">
-            {observations ? (
-              <p className="text-sm text-base-content/80 whitespace-pre-wrap leading-relaxed">
-                {observations}
-              </p>
-            ) : (
-              <p className="text-sm text-base-content/40 italic">
-                Sin observaciones
-              </p>
-            )}
-          </div>
+    <div className="border border-base-300 bg-base-100 rounded-lg p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest flex items-center gap-2">
+          <span className="icon-[tabler--notes] size-4 text-primary" />
+          Observaciones
+        </h2>
+        {!isEditing && (
+          <button
+            type="button"
+            className="btn btn-ghost btn-xs"
+            onClick={handleEdit}
+            disabled={pending}
+          >
+            <span className="icon-[tabler--pencil] size-3.5" />
+            Editar
+          </button>
         )}
       </div>
+
+      {isEditing ? (
+        <div className="space-y-2">
+          <textarea
+            className="textarea textarea-bordered w-full text-sm"
+            rows={4}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Notas, seguimiento, comentarios..."
+            disabled={pending}
+          />
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm flex-1"
+              onClick={handleCancel}
+              disabled={pending}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm flex-1"
+              onClick={handleSave}
+              disabled={pending}
+            >
+              <span className="icon-[tabler--device-floppy] size-4" />
+              Guardar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          {observations ? (
+            <p className="text-sm text-base-content/70 whitespace-pre-wrap leading-relaxed">
+              {observations}
+            </p>
+          ) : (
+            <p className="text-sm text-base-content/30 italic">
+              Sin observaciones
+            </p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

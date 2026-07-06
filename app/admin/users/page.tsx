@@ -9,16 +9,16 @@ export default async function UsersPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Usuarios</h1>
-        <Link href="/admin/users/create" className="btn btn-trust">
+        <h1 className="text-lg font-bold tracking-tight">Usuarios</h1>
+        <Link href="/admin/users/create" className="btn btn-primary btn-sm">
           Nuevo usuario
         </Link>
       </div>
 
-      <div className="overflow-x-auto rounded-box border border-base-300">
+      <div className="border border-base-300 bg-base-100 rounded-lg overflow-hidden">
         <table className="table w-full">
           <thead>
-            <tr>
+            <tr className="text-[11px] text-base-content/40 uppercase tracking-wider border-b border-base-300">
               <th>Email</th>
               <th>Nombre</th>
               <th>Rol</th>
@@ -27,19 +27,19 @@ export default async function UsersPage() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.email}</td>
-                <td>{user.name || "—"}</td>
+              <tr key={user.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0">
+                <td className="text-sm">{user.email}</td>
+                <td className="text-sm">{user.name || "—"}</td>
                 <td>
                   <span
-                    className={`badge ${
+                    className={`badge badge-sm ${
                       user.role === "ADMIN" ? "badge-accent" : "badge-ghost"
                     }`}
                   >
                     {user.role}
                   </span>
                 </td>
-                <td className="text-sm text-base-content/60">
+                <td className="text-xs text-base-content/40">
                   {user.createdAt.toLocaleDateString()}
                 </td>
               </tr>
