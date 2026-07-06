@@ -158,7 +158,7 @@ export function UploadForm() {
     setSelectedTagIds([])
     setSelectedFile(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
-    router.push("/panel/upload?created=1")
+    router.push(`/panel/candidates/${data.id}`)
     router.refresh()
   }
 
