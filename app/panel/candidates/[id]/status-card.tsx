@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { updateStatus } from "./actions"
 import { ConfirmDialog, openConfirm } from "@/components/confirm-dialog"
 import { showToast } from "@/components/toast"
@@ -22,10 +22,6 @@ export function StatusCard({ candidateId, currentStatus }: StatusCardProps) {
   const [pending, setPending] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
   const [selectValue, setSelectValue] = useState(currentStatus)
-
-  useEffect(() => {
-    setSelectValue(currentStatus)
-  }, [currentStatus])
 
   async function handleConfirmStatus() {
     if (!selectedStatus) return

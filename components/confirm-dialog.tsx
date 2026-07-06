@@ -2,22 +2,26 @@
 
 import { useEffect } from "react"
 
+function cleanupOverlay(id: string) {
+  const modal = document.querySelector(`#${id}`)
+  if (modal) {
+    modal.classList.add("hidden")
+    modal.classList.remove("overlay-open", "open", "opened")
+  }
+
+  document.querySelectorAll(".overlay-backdrop").forEach((el) => el.remove())
+  document.querySelectorAll("[data-overlay-wrapper]").forEach((el) => el.remove())
+
+  document.body.classList.remove("overlay-open", "modal-open", "overflow-hidden", "overlay-body-open")
+  document.body.style.overflow = ""
+  document.body.style.paddingRight = ""
+}
+
 function forceCloseOverlay(id: string) {
   window.HSOverlay?.close(`#${id}`)
 
   setTimeout(() => {
-    const modal = document.querySelector(`#${id}`)
-    if (modal) {
-      modal.classList.add("hidden")
-      modal.classList.remove("overlay-open")
-    }
-
-    document.querySelectorAll(".overlay-backdrop").forEach((el) => el.remove())
-    document.querySelectorAll("[data-overlay-wrapper]").forEach((el) => el.remove())
-
-    document.body.classList.remove("overlay-open", "modal-open", "overflow-hidden")
-    document.body.style.overflow = ""
-    document.body.style.paddingRight = ""
+    cleanupOverlay(id)
   }, 350)
 }
 
@@ -45,6 +49,24 @@ export function ConfirmDialog({
   useEffect(() => {
     window.HSStaticMethods?.autoInit()
   }, [])
+
+  useEffect(() => {
+    const el = document.querySelector(`#${id}`)
+    if (!el) return
+
+    const handler = () => cleanupOverlay(id)
+    el.addEventListener("close.overlay", handler)
+
+    return () => {
+      el.removeEventListener("close.overlay", handler)
+    }
+  }, [id])
+
+  useEffect(() => {
+    return () => {
+      cleanupOverlay(id)
+    }
+  }, [id])
 
   function handleConfirm() {
     onConfirm()

@@ -30,6 +30,98 @@ type PreviewData = ParsedData & {
 
 const ACCEPTED_TYPES = ['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg']
 
+function Field({ label, value }: { label: string; value: string }) {
+  if (!value) return null
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">{label}</span>
+      <span className="text-sm text-base-content">{value}</span>
+    </div>
+  )
+}
+
+function BadgeField({ label, items }: { label: string; items: string[] }) {
+  if (!items || items.length === 0) return null
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">{label}</span>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map((item, i) => (
+          <span key={i} className="badge badge-sm bg-base-200 text-base-content border-none">
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ExperienceCards({ items }: { items: Experience[] }) {
+  if (!items || items.length === 0) return null
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Experiencia</span>
+      <div className="flex flex-col gap-2">
+        {items.map((exp, i) => (
+          <div key={i} className="bg-base-200 rounded-lg p-3">
+            <div className="font-medium text-sm text-base-content">{exp.title}</div>
+            {(exp.company || exp.period) && (
+              <div className="text-xs text-base-content/75 mt-0.5">
+                {exp.company}{exp.company && exp.period ? ' · ' : ''}{exp.period}
+              </div>
+            )}
+            {exp.description && (
+              <div className="text-xs text-base-content/80 mt-1 leading-relaxed">{exp.description}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function EducationCards({ items }: { items: Education[] }) {
+  if (!items || items.length === 0) return null
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Educación</span>
+      <div className="flex flex-col gap-2">
+        {items.map((edu, i) => (
+          <div key={i} className="bg-base-200 rounded-lg p-3">
+            <div className="font-medium text-sm text-base-content">{edu.degree}</div>
+            {(edu.institution || edu.year) && (
+              <div className="text-xs text-base-content/75 mt-0.5">
+                {edu.institution}{edu.institution && edu.year ? ' · ' : ''}{edu.year}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CourseCards({ items }: { items: Course[] }) {
+  if (!items || items.length === 0) return null
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Cursos / Certificaciones</span>
+      <div className="flex flex-col gap-2">
+        {items.map((course, i) => (
+          <div key={i} className="bg-base-200 rounded-lg p-3">
+            <div className="font-medium text-sm text-base-content">{course.name}</div>
+            {(course.institution || course.year) && (
+              <div className="text-xs text-base-content/75 mt-0.5">
+                {course.institution}{course.institution && course.year ? ' · ' : ''}{course.year}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function getFileIcon(name: string): string {
   const ext = name.split('.').pop()?.toLowerCase()
   if (ext === 'pdf') return 'tabler--file-type-pdf'
@@ -165,98 +257,6 @@ export function UploadForm() {
   function handleCancel() {
     setPreview(null)
     setSelectedTagIds([])
-  }
-
-  function Field({ label, value }: { label: string; value: string }) {
-    if (!value) return null
-    return (
-      <div className="flex flex-col gap-0.5">
-        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">{label}</span>
-        <span className="text-sm text-base-content">{value}</span>
-      </div>
-    )
-  }
-
-  function BadgeField({ label, items }: { label: string; items: string[] }) {
-    if (!items || items.length === 0) return null
-    return (
-      <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">{label}</span>
-        <div className="flex flex-wrap gap-1.5">
-          {items.map((item, i) => (
-            <span key={i} className="badge badge-sm bg-base-200 text-base-content border-none">
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  function ExperienceCards({ items }: { items: Experience[] }) {
-    if (!items || items.length === 0) return null
-    return (
-      <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Experiencia</span>
-        <div className="flex flex-col gap-2">
-          {items.map((exp, i) => (
-            <div key={i} className="bg-base-200 rounded-lg p-3">
-              <div className="font-medium text-sm text-base-content">{exp.title}</div>
-              {(exp.company || exp.period) && (
-                <div className="text-xs text-base-content/75 mt-0.5">
-                  {exp.company}{exp.company && exp.period ? ' · ' : ''}{exp.period}
-                </div>
-              )}
-              {exp.description && (
-                <div className="text-xs text-base-content/80 mt-1 leading-relaxed">{exp.description}</div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  function EducationCards({ items }: { items: Education[] }) {
-    if (!items || items.length === 0) return null
-    return (
-      <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Educación</span>
-        <div className="flex flex-col gap-2">
-          {items.map((edu, i) => (
-            <div key={i} className="bg-base-200 rounded-lg p-3">
-              <div className="font-medium text-sm text-base-content">{edu.degree}</div>
-              {(edu.institution || edu.year) && (
-                <div className="text-xs text-base-content/75 mt-0.5">
-                  {edu.institution}{edu.institution && edu.year ? ' · ' : ''}{edu.year}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  function CourseCards({ items }: { items: Course[] }) {
-    if (!items || items.length === 0) return null
-    return (
-      <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Cursos / Certificaciones</span>
-        <div className="flex flex-col gap-2">
-          {items.map((course, i) => (
-            <div key={i} className="bg-base-200 rounded-lg p-3">
-              <div className="font-medium text-sm text-base-content">{course.name}</div>
-              {(course.institution || course.year) && (
-                <div className="text-xs text-base-content/75 mt-0.5">
-                  {course.institution}{course.institution && course.year ? ' · ' : ''}{course.year}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    )
   }
 
   return (

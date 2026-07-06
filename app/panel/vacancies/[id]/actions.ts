@@ -3,6 +3,7 @@
 import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
+import { VacancyStatus, CandidateVacancyStage } from "@/app/generated/prisma/enums"
 import { deriveCandidateStatus } from "@/lib/services/derive-candidate-status"
 
 async function verifyVacancyAccess(vacancyId: number) {
@@ -43,7 +44,7 @@ export async function createVacancy(formData: FormData) {
       modality,
       salaryMin,
       salaryMax,
-      status: status as any,
+      status: status as VacancyStatus,
       closedAt: closedAt ? new Date(closedAt) : null,
       clientId: session.user.clientId!,
       createdById: parseInt(session.user.id),
@@ -79,7 +80,7 @@ export async function updateVacancy(id: number, formData: FormData) {
       modality,
       salaryMin,
       salaryMax,
-      status: status as any,
+      status: status as VacancyStatus,
       closedAt: closedAt ? new Date(closedAt) : null,
     },
   })
@@ -147,7 +148,7 @@ export async function updateCandidateStage(vacancyId: number, candidateId: numbe
 
   await prisma.candidateVacancy.update({
     where: { candidateId_vacancyId: { candidateId, vacancyId } },
-    data: { stage: stage as any },
+    data: { stage: stage as CandidateVacancyStage },
   })
 
   await deriveCandidateStatus(candidateId)

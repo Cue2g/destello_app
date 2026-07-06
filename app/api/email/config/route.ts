@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
-import { encrypt, decrypt } from "@/lib/services/crypto"
+import { encrypt } from "@/lib/services/crypto"
 import { testImapConnection } from "@/lib/services/email-sync"
 
 export const runtime = 'nodejs'

@@ -3,6 +3,7 @@
 import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
+import { CandidateStatus } from "@/app/generated/prisma/enums"
 import fs from "fs/promises"
 import path from "path"
 
@@ -29,7 +30,7 @@ export async function updateStatus(id: number, formData: FormData) {
 
   await prisma.candidate.update({
     where: { id },
-    data: { status: status as any },
+    data: { status: status as CandidateStatus },
   })
 
   revalidatePath(`/panel/candidates/${id}`)

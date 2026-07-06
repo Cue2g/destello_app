@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     include: { client: { select: { name: true } } },
   })
 
-  const results: Array<{ clientName: string; result: any }> = []
+  const results: Array<{ clientName: string; result: object }> = []
 
   for (const config of configs) {
     try {

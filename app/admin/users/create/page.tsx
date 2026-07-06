@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation"
 import { createUser } from "@/lib/actions/create-user"
 import prisma from "@/lib/prisma"
-import { auth } from "@/auth"
 import { PageHeader } from "@/components/page-header"
 
 export default async function CreateUserPage() {
-  const session = await auth()
   const clients = await prisma.client.findMany({ orderBy: { name: "asc" } })
 
   return (

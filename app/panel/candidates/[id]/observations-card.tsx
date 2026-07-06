@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { updateObservations } from "./actions"
 import { showToast } from "@/components/toast"
 
@@ -13,10 +13,6 @@ export function ObservationsCard({ candidateId, observations }: ObservationsCard
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(observations || "")
   const [pending, setPending] = useState(false)
-
-  useEffect(() => {
-    setDraft(observations || "")
-  }, [observations])
 
   function handleEdit() {
     setDraft(observations || "")

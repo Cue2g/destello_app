@@ -42,8 +42,8 @@ async function main() {
   try {
     await prisma.$executeRawUnsafe(sql);
     console.log("Migration applied successfully");
-  } catch (err: any) {
-    console.error("Error:", err.message);
+  } catch (err: unknown) {
+    console.error("Error:", (err as Error).message);
   } finally {
     await prisma.$disconnect();
   }

@@ -80,7 +80,7 @@ function openInbox(imap: Imap): Promise<void> {
   })
 }
 
-function searchEmails(imap: Imap, criteria: any[]): Promise<number[]> {
+function searchEmails(imap: Imap, criteria: (string | Date | (string | Date)[])[]): Promise<number[]> {
   return new Promise((resolve, reject) => {
     imap.search(criteria, (err, results) => {
       if (err) reject(err)
@@ -128,10 +128,11 @@ export async function testImapConnection(config: {
     await openInbox(imap)
     imap.end()
     return { ok: true, message: 'Conexión exitosa' }
-  } catch (err: any) {
-    const msg = err?.source === 'timeout'
+  } catch (err: unknown) {
+    const error = err as { source?: string; textual?: string; message?: string }
+    const msg = error?.source === 'timeout'
       ? 'Tiempo de espera agotado. Verifica host, puerto y TLS.'
-      : err?.textual || err?.message || 'Error de conexión IMAP'
+      : error?.textual || error?.message || 'Error de conexión IMAP'
     return { ok: false, message: msg }
   }
 }
@@ -158,7 +159,7 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
 
   // IMAP SINCE requires format "DD-Mon-YYYY" - we pass a Date object
   // and the imap library converts it internally
-  const searchCriteria: any[] = ['UNSEEN']
+  const searchCriteria: (string | Date | (string | Date)[])[] = ['UNSEEN']
   if (config.lastChecked) {
     searchCriteria.push(['SINCE', config.lastChecked])
     console.log(`${LOG_PREFIX} Search criteria: UNSEEN + SINCE ${config.lastChecked.toISOString()}`)
@@ -300,31 +301,31 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
             status: 'created',
             candidateId: candidate.id,
           })
-        } catch (err: any) {
+        } catch (err: unknown) {
           await fs.unlink(filePath).catch(() => {})
-          console.log(`${LOG_PREFIX}   Error processing attachment: ${err.message}`)
+          console.log(`${LOG_PREFIX}   Error processing attachment: ${(err as Error).message}`)
           result.errors++
           result.details.push({
             emailSubject: subject,
             from,
             filename,
             status: 'error',
-            message: err.message,
+            message: (err as Error).message,
           })
         }
       }
 
       await markAsSeen(imap, uid)
       console.log(`${LOG_PREFIX}   Marked email uid=${uid} as seen`)
-    } catch (err: any) {
-      console.log(`${LOG_PREFIX}   Error fetching/parsing email uid=${uid}: ${err.message}`)
+    } catch (err: unknown) {
+      console.log(`${LOG_PREFIX}   Error fetching/parsing email uid=${uid}: ${(err as Error).message}`)
       result.errors++
       result.details.push({
         emailSubject: '(error al parsear)',
         from: '',
         filename: '',
         status: 'error',
-        message: err.message,
+        message: (err as Error).message,
       })
     }
   }

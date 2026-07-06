@@ -41,7 +41,6 @@ const navLinks = [
 
 export function PanelSidebar({
   userName,
-  isOpen,
   onClose,
 }: {
   userName: string | null | undefined

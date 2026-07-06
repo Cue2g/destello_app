@@ -186,7 +186,7 @@ export async function classifyTags(
     }
 
     return Object.entries(result.decisions)
-      .filter(([_, decision]) => String(decision).toUpperCase() === 'YES')
+      .filter(([, decision]) => String(decision).toUpperCase() === 'YES')
       .map(([name]) => name)
       .filter(name =>
         existingTags.some(et => et.name.toLowerCase() === name.toLowerCase()),

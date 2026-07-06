@@ -16,6 +16,26 @@ interface EmailConfig {
   lastChecked: string | null
 }
 
+interface FormFields {
+  provider: string
+  host: string
+  port: string
+  userEmail: string
+  password: string
+  useTls: boolean
+  isActive: boolean
+}
+
+const INITIAL_FORM: FormFields = {
+  provider: "CUSTOM",
+  host: "",
+  port: "993",
+  userEmail: "",
+  password: "",
+  useTls: true,
+  isActive: true,
+}
+
 const PROVIDER_PRESETS: Record<string, { host: string; port: number; useTls: boolean }> = {
   GMAIL: { host: "imap.gmail.com", port: 993, useTls: true },
 }
@@ -25,52 +45,38 @@ export default function ConnectionsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [disconnecting, setDisconnecting] = useState(false)
-
   const [showIntro, setShowIntro] = useState(false)
-
-  const [provider, setProvider] = useState("CUSTOM")
-  const [host, setHost] = useState("")
-  const [port, setPort] = useState("993")
-  const [userEmail, setUserEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [useTls, setUseTls] = useState(true)
-  const [isActive, setIsActive] = useState(true)
-  const [hasChanges, setHasChanges] = useState(false)
+  const [form, setForm] = useState<FormFields>(INITIAL_FORM)
 
   useEffect(() => {
-    fetchConfig()
+    fetch("/api/email/config")
+      .then(r => r.json())
+      .then(data => {
+        if (data.config) {
+          const c = data.config as EmailConfig
+          setConfig(c)
+          setForm({
+            provider: c.provider,
+            host: c.host,
+            port: String(c.port),
+            userEmail: c.userEmail,
+            useTls: c.useTls,
+            isActive: c.isActive,
+            password: "",
+          })
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
-  async function fetchConfig() {
-    try {
-      const res = await fetch("/api/email/config")
-      const data = await res.json()
-      if (data.config) {
-        const c = data.config as EmailConfig
-        setConfig(c)
-        setProvider(c.provider)
-        setHost(c.host)
-        setPort(String(c.port))
-        setUserEmail(c.userEmail)
-        setUseTls(c.useTls)
-        setIsActive(c.isActive)
-      }
-    } catch {
-      // ignore
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleProviderChange = useCallback((value: string) => {
-    setProvider(value)
-    setHasChanges(true)
-    if (value !== "CUSTOM" && PROVIDER_PRESETS[value]) {
+    setForm(prev => {
       const preset = PROVIDER_PRESETS[value]
-      setHost(preset.host)
-      setPort(String(preset.port))
-      setUseTls(preset.useTls)
-    }
+      return preset && value !== "CUSTOM"
+        ? { ...prev, provider: value, host: preset.host, port: String(preset.port), useTls: preset.useTls }
+        : { ...prev, provider: value }
+    })
   }, [])
 
   async function handleSave() {
@@ -80,13 +86,13 @@ export default function ConnectionsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          provider,
-          host,
-          port: parseInt(port),
-          userEmail,
-          password,
-          useTls,
-          isActive,
+          provider: form.provider,
+          host: form.host,
+          port: parseInt(form.port),
+          userEmail: form.userEmail,
+          password: form.password,
+          useTls: form.useTls,
+          isActive: form.isActive,
         }),
       })
 
@@ -99,8 +105,7 @@ export default function ConnectionsPage() {
 
       showToast("Configuración guardada correctamente")
       setConfig(data.config)
-      setPassword("")
-      setHasChanges(false)
+      setForm(prev => ({ ...prev, password: "" }))
     } catch {
       showToast("Error de conexión al guardar", "error")
     } finally {
@@ -121,13 +126,7 @@ export default function ConnectionsPage() {
         return
       }
       setConfig(null)
-      setProvider("CUSTOM")
-      setHost("")
-      setPort("993")
-      setUserEmail("")
-      setPassword("")
-      setUseTls(true)
-      setIsActive(true)
+      setForm(INITIAL_FORM)
       showToast("Cuenta desconectada")
     } catch {
       showToast("Error de conexión al desconectar", "error")
@@ -245,7 +244,7 @@ export default function ConnectionsPage() {
               <select
                 id="email-provider"
                 className="select"
-                value={provider}
+                value={form.provider}
                 onChange={(e) => handleProviderChange(e.target.value)}
               >
                 <option value="CUSTOM">Correo personalizado</option>
@@ -263,8 +262,8 @@ export default function ConnectionsPage() {
                   type="text"
                   className="input"
                   placeholder=""
-                  value={host}
-                  onChange={(e) => { setHost(e.target.value); setHasChanges(true) }}
+                  value={form.host}
+                  onChange={(e) => { setForm(prev => ({ ...prev, host: e.target.value })) }}
                   required
                 />
                 <label htmlFor="email-host" className="input-floating-label">
@@ -278,8 +277,8 @@ export default function ConnectionsPage() {
                   type="number"
                   className="input"
                   placeholder=""
-                  value={port}
-                  onChange={(e) => { setPort(e.target.value); setHasChanges(true) }}
+                  value={form.port}
+                  onChange={(e) => { setForm(prev => ({ ...prev, port: e.target.value })) }}
                   required
                 />
                 <label htmlFor="email-port" className="input-floating-label">
@@ -294,8 +293,8 @@ export default function ConnectionsPage() {
                 type="email"
                 className="input"
                 placeholder=""
-                value={userEmail}
-                onChange={(e) => { setUserEmail(e.target.value); setHasChanges(true) }}
+                  value={form.userEmail}
+                  onChange={(e) => { setForm(prev => ({ ...prev, userEmail: e.target.value })) }}
                 required
               />
               <label htmlFor="email-user" className="input-floating-label">
@@ -309,8 +308,8 @@ export default function ConnectionsPage() {
                 type="password"
                 className="input"
                 placeholder=""
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setHasChanges(true) }}
+                  value={form.password}
+                  onChange={(e) => { setForm(prev => ({ ...prev, password: e.target.value })) }}
                 required
               />
               <label htmlFor="email-password" className="input-floating-label">
@@ -323,8 +322,8 @@ export default function ConnectionsPage() {
                 <input
                   type="checkbox"
                   className="toggle toggle-primary"
-                  checked={useTls}
-                  onChange={(e) => { setUseTls(e.target.checked); setHasChanges(true) }}
+                  checked={form.useTls}
+                  onChange={(e) => { setForm(prev => ({ ...prev, useTls: e.target.checked })) }}
                 />
                 <span className="text-xs">Usar TLS</span>
               </label>
@@ -333,8 +332,8 @@ export default function ConnectionsPage() {
                 <input
                   type="checkbox"
                   className="toggle toggle-primary"
-                  checked={isActive}
-                  onChange={(e) => { setIsActive(e.target.checked); setHasChanges(true) }}
+                  checked={form.isActive}
+                  onChange={(e) => { setForm(prev => ({ ...prev, isActive: e.target.checked })) }}
                 />
                 <span className="text-xs">Activo</span>
               </label>

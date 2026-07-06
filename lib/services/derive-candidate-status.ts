@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma"
+import { CandidateStatus } from "@/app/generated/prisma/enums"
 
 export async function deriveCandidateStatus(candidateId: number) {
   const assignments = await prisma.candidateVacancy.findMany({
@@ -23,6 +24,6 @@ export async function deriveCandidateStatus(candidateId: number) {
 
   await prisma.candidate.update({
     where: { id: candidateId },
-    data: { status: status as any },
+    data: { status: status as CandidateStatus },
   })
 }
