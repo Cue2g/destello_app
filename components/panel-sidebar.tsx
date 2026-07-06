@@ -107,8 +107,8 @@ export function PanelSidebar({
   }
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-base-300 bg-base-100">
-      <div className="flex h-14 items-center px-5">
+    <aside className="flex h-screen w-64 max-md:w-full flex-col border-r border-base-300 bg-base-100">
+      <div className="flex h-14 items-center justify-between px-5">
         <Link
           href="/panel"
           onClick={handleNavigate}
@@ -116,6 +116,14 @@ export function PanelSidebar({
         >
           Destello
         </Link>
+        <button
+          type="button"
+          onClick={onClose}
+          className="md:hidden btn btn-ghost btn-square"
+          aria-label="Close sidebar"
+        >
+          <span className="icon-[tabler--x] size-5" />
+        </button>
       </div>
 
       <div className="px-3 mb-3">

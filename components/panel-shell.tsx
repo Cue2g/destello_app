@@ -14,11 +14,8 @@ export function PanelShell({
 
   return (
     <div className="flex h-screen">
-      <div
-        className={`${
-          sidebarOpen ? "w-64" : "w-0 md:w-64"
-        } transition-[width] duration-300 overflow-hidden shrink-0`}
-      >
+      {/* Desktop sidebar */}
+      <div className="hidden md:block w-64 shrink-0">
         <PanelSidebar
           userName={userName}
           isOpen={sidebarOpen}
@@ -26,23 +23,35 @@ export function PanelShell({
         />
       </div>
 
-      {/* Mobile hamburger */}
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div className="md:hidden fixed inset-0 z-50 motion-preset-slide-right-lg motion-duration-300">
+          <PanelSidebar
+            userName={userName}
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+        </div>
+      )}
+
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-neutral/50 motion-preset-fade-sm"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Mobile hamburger opener */}
       <button
         type="button"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 btn btn-ghost btn-square"
-        aria-label="Toggle sidebar"
+        onClick={() => setSidebarOpen(true)}
+        className={`md:hidden fixed top-4 left-4 z-50 btn btn-ghost btn-square ${
+          sidebarOpen ? "hidden" : "block"
+        }`}
+        aria-label="Open sidebar"
       >
-        <span
-          className={`icon-[tabler--menu-2] size-6 ${
-            sidebarOpen ? "hidden" : "block"
-          }`}
-        />
-        <span
-          className={`icon-[tabler--x] size-6 ${
-            sidebarOpen ? "block" : "hidden"
-          }`}
-        />
+        <span className="icon-[tabler--menu-2] size-6" />
       </button>
 
       <main
