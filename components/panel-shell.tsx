@@ -50,7 +50,7 @@ export function PanelShell({
           sidebarOpen ? "max-md:pt-20" : "max-md:pt-20"
         }`}
       >
-        <div className="p-6 lg:p-8">{children}</div>
+        <div className="p-6 lg:p-8 max-w-5xl mx-auto">{children}</div>
       </main>
     </div>
   )

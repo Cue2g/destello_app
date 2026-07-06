@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { CandidateSource, CandidateStatus } from "@/app/generated/prisma/enums"
+import { PageHeader } from "@/components/page-header"
 
 const sourceLabels: Record<CandidateSource, string> = {
   WHATSAPP: "WhatsApp",
@@ -59,8 +60,8 @@ export default async function PanelDashboard() {
   ) as Record<CandidateStatus, number>
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
-      <h1 className="text-lg font-bold tracking-tight">Dashboard</h1>
+    <div className="space-y-10">
+      <PageHeader breadcrumbs={[{ label: "Panel" }]} />
 
       {/* Total */}
       <div className="border border-base-300 bg-base-100 rounded-lg p-6 flex items-center gap-5">
@@ -69,13 +70,13 @@ export default async function PanelDashboard() {
         </div>
         <div>
           <p className="text-3xl font-bold tracking-tight">{total}</p>
-          <p className="text-xs text-base-content/50 mt-0.5">Candidatos totales</p>
+          <p className="text-xs text-base-content/70 mt-0.5">Candidatos totales</p>
         </div>
       </div>
 
       {/* Por plataforma */}
       <div>
-        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-4">Por plataforma</h2>
+        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4">Por plataforma</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {(Object.keys(sourceLabels) as CandidateSource[]).map((src) => (
             <div key={src} className="border border-base-300 bg-base-100 rounded-lg p-5 flex items-center gap-4">
@@ -86,7 +87,7 @@ export default async function PanelDashboard() {
               </div>
               <div>
                 <p className="text-xl font-bold tracking-tight">{sourceCounts[src] ?? 0}</p>
-                <p className="text-xs text-base-content/50">{sourceLabels[src]}</p>
+                <p className="text-xs text-base-content/70">{sourceLabels[src]}</p>
               </div>
             </div>
           ))}
@@ -95,17 +96,17 @@ export default async function PanelDashboard() {
 
       {/* Por estado - pipeline */}
       <div>
-        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-4">Pipeline de candidatos</h2>
+        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4">Pipeline de candidatos</h2>
         <div className="border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3 sm:gap-0">
             {pipelineOrder.map((st, i) => (
               <div key={st} className="flex flex-col sm:flex-row items-center gap-3 sm:gap-0">
                 {i > 0 && (
                   <>
-                    <span className="sm:hidden text-base-content/20">
+                    <span className="sm:hidden text-base-content/40">
                       <span className="icon-[tabler--chevron-down] size-4" />
                     </span>
-                    <span className="hidden sm:block text-base-content/20">
+                    <span className="hidden sm:block text-base-content/40">
                       <span className="icon-[tabler--chevron-right] size-5" />
                     </span>
                   </>
@@ -118,7 +119,7 @@ export default async function PanelDashboard() {
                       {statusCounts[st] ?? 0}
                     </span>
                   </div>
-                  <span className="text-[11px] text-base-content/50 font-medium whitespace-nowrap">
+                  <span className="text-[11px] text-base-content/70 font-medium whitespace-nowrap">
                     {statusLabels[st]}
                   </span>
                 </div>

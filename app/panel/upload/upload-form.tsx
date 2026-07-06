@@ -171,7 +171,7 @@ export function UploadForm() {
     if (!value) return null
     return (
       <div className="flex flex-col gap-0.5">
-        <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">{label}</span>
+        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">{label}</span>
         <span className="text-sm text-base-content">{value}</span>
       </div>
     )
@@ -181,7 +181,7 @@ export function UploadForm() {
     if (!items || items.length === 0) return null
     return (
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">{label}</span>
+        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">{label}</span>
         <div className="flex flex-wrap gap-1.5">
           {items.map((item, i) => (
             <span key={i} className="badge badge-sm bg-base-200 text-base-content border-none">
@@ -197,18 +197,18 @@ export function UploadForm() {
     if (!items || items.length === 0) return null
     return (
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">Experiencia</span>
+        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Experiencia</span>
         <div className="flex flex-col gap-2">
           {items.map((exp, i) => (
             <div key={i} className="bg-base-200 rounded-lg p-3">
               <div className="font-medium text-sm text-base-content">{exp.title}</div>
               {(exp.company || exp.period) && (
-                <div className="text-xs text-base-content/60 mt-0.5">
+                <div className="text-xs text-base-content/75 mt-0.5">
                   {exp.company}{exp.company && exp.period ? ' · ' : ''}{exp.period}
                 </div>
               )}
               {exp.description && (
-                <div className="text-xs text-base-content/70 mt-1 leading-relaxed">{exp.description}</div>
+                <div className="text-xs text-base-content/80 mt-1 leading-relaxed">{exp.description}</div>
               )}
             </div>
           ))}
@@ -221,13 +221,13 @@ export function UploadForm() {
     if (!items || items.length === 0) return null
     return (
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">Educación</span>
+        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Educación</span>
         <div className="flex flex-col gap-2">
           {items.map((edu, i) => (
             <div key={i} className="bg-base-200 rounded-lg p-3">
               <div className="font-medium text-sm text-base-content">{edu.degree}</div>
               {(edu.institution || edu.year) && (
-                <div className="text-xs text-base-content/60 mt-0.5">
+                <div className="text-xs text-base-content/75 mt-0.5">
                   {edu.institution}{edu.institution && edu.year ? ' · ' : ''}{edu.year}
                 </div>
               )}
@@ -242,13 +242,13 @@ export function UploadForm() {
     if (!items || items.length === 0) return null
     return (
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">Cursos / Certificaciones</span>
+        <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Cursos / Certificaciones</span>
         <div className="flex flex-col gap-2">
           {items.map((course, i) => (
             <div key={i} className="bg-base-200 rounded-lg p-3">
               <div className="font-medium text-sm text-base-content">{course.name}</div>
               {(course.institution || course.year) && (
-                <div className="text-xs text-base-content/60 mt-0.5">
+                <div className="text-xs text-base-content/75 mt-0.5">
                   {course.institution}{course.institution && course.year ? ' · ' : ''}{course.year}
                 </div>
               )}
@@ -301,7 +301,7 @@ export function UploadForm() {
             <div className="absolute inset-0 bg-base-100/60 rounded-xl flex items-center justify-center z-10">
               <div className="flex flex-col items-center gap-2">
                 <span className="icon-[tabler--loader-2] size-7 text-primary animate-spin" />
-                <span className="text-sm text-base-content/60 font-medium">Procesando archivo...</span>
+                <span className="text-sm text-base-content/75 font-medium">Procesando archivo...</span>
               </div>
             </div>
           )}
@@ -313,7 +313,7 @@ export function UploadForm() {
               </div>
               <div>
                 <p className="text-sm font-medium text-base-content">{selectedFile.name}</p>
-                <p className="text-xs text-base-content/60 mt-0.5">
+                <p className="text-xs text-base-content/75 mt-0.5">
                   {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
                 </p>
               </div>
@@ -339,7 +339,7 @@ export function UploadForm() {
                 <p className="text-sm font-medium text-base-content">
                   Arrastra tu archivo aquí
                 </p>
-                <p className="text-xs text-base-content/60 mt-1">
+                <p className="text-xs text-base-content/75 mt-1">
                   o haz clic para seleccionar
                 </p>
               </div>
@@ -385,7 +385,7 @@ export function UploadForm() {
                 </div>
                 <div className="text-center">
                   <h2 className="text-xl font-bold">Vista previa</h2>
-                  <p className="text-sm text-base-content/60 mt-1">
+                  <p className="text-sm text-base-content/75 mt-1">
                     Datos extraídos del CV
                   </p>
                 </div>
@@ -408,14 +408,14 @@ export function UploadForm() {
 
                 {preview.summary && (
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">Resumen</span>
+                    <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Resumen</span>
                     <p className="text-sm text-base-content leading-relaxed">{preview.summary}</p>
                   </div>
                 )}
 
                 {preview.suggestedTags.length > 0 && (
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-xs text-base-content/40 uppercase tracking-wider font-medium">Tags sugeridos</span>
+                    <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Tags sugeridos</span>
                     <div className="flex flex-wrap gap-2">
                       {preview.suggestedTags.map((tag) => {
                         const selected = selectedTagIds.includes(tag.id)

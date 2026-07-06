@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma"
 import Link from "next/link"
+import { PageHeader } from "@/components/page-header"
 
 export default async function ClientsPage() {
   const clients = await prisma.client.findMany({
@@ -8,7 +9,11 @@ export default async function ClientsPage() {
   })
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div>
+      <PageHeader
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Clientes" }]}
+        backHref="/admin"
+      />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-bold tracking-tight">Clientes</h1>
         <Link href="/admin/clients/create" className="btn btn-primary btn-sm">
@@ -19,7 +24,7 @@ export default async function ClientsPage() {
       <div className="border border-base-300 bg-base-100 rounded-lg overflow-hidden">
         <table className="table w-full">
           <thead>
-            <tr className="text-[11px] text-base-content/40 uppercase tracking-wider border-b border-base-300">
+            <tr className="text-[11px] text-base-content/60 uppercase tracking-wider border-b border-base-300">
               <th>Nombre</th>
               <th>Email</th>
               <th>Teléfono</th>
@@ -32,8 +37,8 @@ export default async function ClientsPage() {
             {clients.map((client) => (
               <tr key={client.id} className="hover:bg-base-200/40 border-b border-base-200/60 last:border-b-0">
                 <td className="text-sm font-medium">{client.name}</td>
-                <td className="text-sm text-base-content/60">{client.email}</td>
-                <td className="text-sm text-base-content/60">{client.phone || "—"}</td>
+                <td className="text-sm text-base-content/75">{client.email}</td>
+                <td className="text-sm text-base-content/75">{client.phone || "—"}</td>
                 <td className="text-sm">{client._count.users}</td>
                 <td className="text-sm">{client._count.candidates}</td>
                 <td>

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { showToast } from "@/components/toast"
 import { ConfirmDialog, openConfirm } from "@/components/confirm-dialog"
+import { PageHeader } from "@/components/page-header"
 
 interface EmailConfig {
   id: number
@@ -137,7 +138,11 @@ export default function ConnectionsPage() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div>
+        <PageHeader
+          breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Conexiones" }]}
+          backHref="/panel"
+        />
         <h1 className="text-2xl font-bold mb-8">Conexiones</h1>
         <div className="flex items-center justify-center py-12">
           <span className="loading loading-spinner loading-md" />
@@ -147,7 +152,11 @@ export default function ConnectionsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="space-y-8">
+      <PageHeader
+        breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Conexiones" }]}
+        backHref="/panel"
+      />
       <h1 className="text-lg font-bold tracking-tight">Conexiones</h1>
 
       {config ? (
@@ -159,14 +168,14 @@ export default function ConnectionsPage() {
             </div>
             <div className="text-center">
               <h2 className="text-sm font-semibold">Cuenta conectada</h2>
-              <p className="text-xs text-base-content/50 mt-0.5">{config.userEmail}</p>
+              <p className="text-xs text-base-content/70 mt-0.5">{config.userEmail}</p>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 text-xs text-base-content/60 mb-6">
+          <div className="flex flex-col gap-2 text-xs text-base-content/75 mb-6">
             <div className="flex justify-between py-1">
               <span>Estado</span>
-              <span className={`font-medium ${config.isActive ? 'text-success' : 'text-base-content/30'}`}>
+              <span className={`font-medium ${config.isActive ? 'text-success' : 'text-base-content/50'}`}>
                 {config.isActive ? 'Activo' : 'Inactivo'}
               </span>
             </div>
@@ -217,7 +226,7 @@ export default function ConnectionsPage() {
             </div>
             <div className="text-center">
               <h2 className="text-sm font-semibold">Configuración de Email</h2>
-              <p className="text-xs text-base-content/50 mt-0.5">
+              <p className="text-xs text-base-content/70 mt-0.5">
                 Configura una cuenta IMAP para recibir CVs por correo
               </p>
             </div>
@@ -359,7 +368,7 @@ export default function ConnectionsPage() {
                 </div>
                 <div className="text-center">
                   <h2 className="text-xl font-bold">Conectar bandeja de correo</h2>
-                  <p className="text-sm text-base-content/60 mt-1">
+                  <p className="text-sm text-base-content/75 mt-1">
                     Destello puede recibir CVs automáticamente desde tu correo electrónico.
                   </p>
                 </div>

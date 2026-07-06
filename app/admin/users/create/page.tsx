@@ -2,14 +2,23 @@ import { redirect } from "next/navigation"
 import { createUser } from "@/lib/actions/create-user"
 import prisma from "@/lib/prisma"
 import { auth } from "@/auth"
+import { PageHeader } from "@/components/page-header"
 
 export default async function CreateUserPage() {
   const session = await auth()
   const clients = await prisma.client.findMany({ orderBy: { name: "asc" } })
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full max-w-sm">
+    <div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Admin", href: "/admin" },
+          { label: "Usuarios", href: "/admin/users" },
+          { label: "Crear" },
+        ]}
+        backHref="/admin/users"
+      />
+      <div className="max-w-sm mx-auto">
         <div className="flex flex-col items-center gap-6">
           <header className="flex flex-col items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -17,7 +26,7 @@ export default async function CreateUserPage() {
             </div>
             <div className="text-center">
               <h1 className="text-lg font-bold tracking-tight">Crear usuario</h1>
-              <p className="text-xs text-base-content/50 mt-1">
+              <p className="text-xs text-base-content/70 mt-1">
                 Nuevo usuario del sistema
               </p>
             </div>

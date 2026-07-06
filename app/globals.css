@@ -7,9 +7,6 @@
 @source "./node_modules/flyonui/flyonui.js";
 
 @theme {
+  --font-sans: var(--font-inter);
   --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-body {
-  font-family: var(--font-mono);
 }

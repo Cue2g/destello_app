@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma"
 import Link from "next/link"
+import { PageHeader } from "@/components/page-header"
 
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
@@ -8,7 +9,11 @@ export default async function UsersPage() {
   })
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div>
+      <PageHeader
+        breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Usuarios" }]}
+        backHref="/admin"
+      />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-bold tracking-tight">Usuarios</h1>
         <Link href="/admin/users/create" className="btn btn-primary btn-sm">
@@ -19,7 +24,7 @@ export default async function UsersPage() {
       <div className="border border-base-300 bg-base-100 rounded-lg overflow-hidden">
         <table className="table w-full">
           <thead>
-            <tr className="text-[11px] text-base-content/40 uppercase tracking-wider border-b border-base-300">
+            <tr className="text-[11px] text-base-content/60 uppercase tracking-wider border-b border-base-300">
               <th>Email</th>
               <th>Nombre</th>
               <th>Rol</th>
@@ -41,10 +46,10 @@ export default async function UsersPage() {
                     {user.role === "ADMIN" ? "Admin" : "Cliente"}
                   </span>
                 </td>
-                <td className="text-sm text-base-content/60">
+                <td className="text-sm text-base-content/75">
                   {user.client?.name || "—"}
                 </td>
-                <td className="text-xs text-base-content/40">
+                <td className="text-xs text-base-content/60">
                   {user.createdAt.toLocaleDateString()}
                 </td>
               </tr>

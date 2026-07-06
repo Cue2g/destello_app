@@ -81,7 +81,7 @@ export function TagList({ tags }: { tags: TagData[] }) {
   return (
     <>
       {tags.length === 0 ? (
-        <div className="text-center text-base-content/60 py-8">
+        <div className="text-center text-base-content/75 py-8">
           No hay tags creados aún
         </div>
       ) : (
@@ -132,7 +132,7 @@ export function TagList({ tags }: { tags: TagData[] }) {
                       placeholder="Sin prompt"
                     />
                   </td>
-                  <td className="text-sm text-base-content/60">{tag._count.candidates}</td>
+                  <td className="text-sm text-base-content/75">{tag._count.candidates}</td>
                   <td>
                     <div className="flex gap-1">
                       <button
@@ -169,12 +169,12 @@ export function TagList({ tags }: { tags: TagData[] }) {
                       {tag.name}
                     </span>
                   </td>
-                  <td className="text-sm text-base-content/60 max-w-[200px] truncate">
+                  <td className="text-sm text-base-content/75 max-w-[200px] truncate">
                     {tag.prompt || (
-                      <span className="text-base-content/30 italic">Sin prompt</span>
+                      <span className="text-base-content/50 italic">Sin prompt</span>
                     )}
                   </td>
-                  <td className="text-sm text-base-content/60">{tag._count.candidates}</td>
+                  <td className="text-sm text-base-content/75">{tag._count.candidates}</td>
                   <td>
                     <div className="flex gap-1">
                       <button

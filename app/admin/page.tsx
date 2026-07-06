@@ -1,8 +1,10 @@
 import Link from "next/link"
+import { PageHeader } from "@/components/page-header"
 
 export default function AdminDashboard() {
   return (
-    <div className="max-w-2xl mx-auto">
+    <div>
+      <PageHeader breadcrumbs={[{ label: "Admin" }]} />
       <h1 className="text-lg font-bold tracking-tight mb-6">Panel de administración</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -16,7 +18,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h2 className="text-sm font-semibold">Usuarios</h2>
-              <p className="text-xs text-base-content/50 mt-1">
+              <p className="text-xs text-base-content/70 mt-1">
                 Gestionar usuarios del sistema
               </p>
             </div>
@@ -33,7 +35,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h2 className="text-sm font-semibold">Crear usuario</h2>
-              <p className="text-xs text-base-content/50 mt-1">
+              <p className="text-xs text-base-content/70 mt-1">
                 Añadir un nuevo usuario al sistema
               </p>
             </div>
@@ -50,7 +52,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h2 className="text-sm font-semibold">Clientes</h2>
-              <p className="text-xs text-base-content/50 mt-1">
+              <p className="text-xs text-base-content/70 mt-1">
                 Gestionar clientes del sistema
               </p>
             </div>
@@ -67,7 +69,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h2 className="text-sm font-semibold">Crear cliente</h2>
-              <p className="text-xs text-base-content/50 mt-1">
+              <p className="text-xs text-base-content/70 mt-1">
                 Registrar un nuevo cliente
               </p>
             </div>

@@ -76,7 +76,7 @@ export function TagForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-base-content/60">Color</label>
+        <label className="text-sm text-base-content/75">Color</label>
         <div className="flex flex-wrap gap-2">
           {TAG_COLORS.map((c) => (
             <button
@@ -94,7 +94,7 @@ export function TagForm() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm text-base-content/60" htmlFor="tag-prompt">
+        <label className="text-sm text-base-content/75" htmlFor="tag-prompt">
           Prompt de contexto (opcional)
         </label>
         <textarea
@@ -104,7 +104,7 @@ export function TagForm() {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
         />
-        <p className="text-xs text-base-content/40">
+        <p className="text-xs text-base-content/60">
           La IA usará esta descripción para sugerir este tag al analizar CVs
         </p>
       </div>

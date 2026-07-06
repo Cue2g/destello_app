@@ -60,7 +60,7 @@ export function StatusCard({ candidateId, currentStatus }: StatusCardProps) {
   return (
     <>
       <div className="border border-base-300 bg-base-100 rounded-lg p-5">
-        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4 flex items-center gap-2">
           <span className="icon-[tabler--toggle-left] size-4 text-primary" />
           Cambiar estado
         </h2>

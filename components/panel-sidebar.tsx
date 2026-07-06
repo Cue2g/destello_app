@@ -20,6 +20,12 @@ const navLinks = [
     exact: false,
   },
   {
+    href: "/panel/vacancies",
+    label: "Vacantes",
+    icon: "icon-[tabler--briefcase]",
+    exact: false,
+  },
+  {
     href: "/panel/connections",
     label: "Conexiones",
     icon: "icon-[tabler--plug-connected]",
@@ -158,7 +164,7 @@ export function PanelSidebar({
 
       <div className="border-t border-base-300 px-3 py-3">
         <div className="px-3 py-2">
-          <p className="text-xs text-base-content/50 truncate">
+          <p className="text-xs text-base-content/70 truncate">
             {userName || "Usuario"}
           </p>
         </div>
@@ -167,7 +173,7 @@ export function PanelSidebar({
             <button
               type="button"
               onClick={handleSignOut}
-              className="w-full text-left text-base-content/50 hover:text-error"
+              className="w-full text-left text-base-content/70 hover:text-error"
             >
               <span className="icon-[tabler--logout] size-4" />
               Cerrar sesión

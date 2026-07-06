@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import FlyonuiScript from "../components/FlyonuiScript";
 
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -23,9 +22,9 @@ export default function RootLayout({
     <html
       lang="es"
       data-theme="light"
-      className={`${spaceMono.variable} h-full`}
+      className={`${inter.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col antialiased">
+      <body className="min-h-full flex flex-col antialiased font-sans">
         {children}
         <FlyonuiScript />
       </body>

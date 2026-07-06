@@ -16,7 +16,9 @@ export default async function AdminLayout({
   return (
     <div className="h-screen flex flex-col bg-base-200">
       <AdminNav userName={session.user.name} userEmail={session.user.email} />
-      <main className="flex-1 overflow-auto p-6 lg:p-8">{children}</main>
+      <main className="flex-1 overflow-auto">
+        <div className="p-6 lg:p-8 max-w-5xl mx-auto">{children}</div>
+      </main>
     </div>
   )
 }

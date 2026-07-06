@@ -2,6 +2,7 @@ import Link from "next/link"
 import prisma from "@/lib/prisma"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
+import { PageHeader } from "@/components/page-header"
 import { CandidateFilters } from "./candidate-filters"
 
 const statusLabels: Record<string, string> = {
@@ -59,7 +60,11 @@ export default async function CandidatesPage({
   })
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6">
+      <PageHeader
+        breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Candidatos" }]}
+        backHref="/panel"
+      />
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold tracking-tight">Candidatos</h1>
         <CandidateFilters source={source} status={status} />
@@ -68,10 +73,10 @@ export default async function CandidatesPage({
       {candidates.length === 0 ? (
         <div className="border border-base-300 bg-base-100 rounded-lg">
           <div className="flex flex-col items-center justify-center py-16 gap-4">
-            <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/30">
+            <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/50">
               <span className="icon-[tabler--users] size-6" />
             </div>
-            <p className="text-sm text-base-content/50">
+            <p className="text-sm text-base-content/70">
               {source || status
                 ? "No se encontraron candidatos con esos filtros."
                 : "No hay candidatos registrados aún."}
@@ -83,7 +88,7 @@ export default async function CandidatesPage({
           <div className="overflow-x-auto">
             <table className="table table-sm">
               <thead>
-                <tr className="text-[11px] text-base-content/40 uppercase tracking-wider border-b border-base-300">
+                <tr className="text-[11px] text-base-content/60 uppercase tracking-wider border-b border-base-300">
                   <th>Nombre</th>
                   <th>Contacto</th>
                   <th>Fuente</th>
@@ -105,7 +110,7 @@ export default async function CandidatesPage({
                       </Link>
                     </td>
                     <td>
-                      <div className="text-xs text-base-content/60 space-y-0.5">
+                      <div className="text-xs text-base-content/75 space-y-0.5">
                         {c.email && <div className="truncate max-w-36">{c.email}</div>}
                         {c.phone && <div className="text-[11px]">{c.phone}</div>}
                       </div>
@@ -123,7 +128,7 @@ export default async function CandidatesPage({
                     <td>
                       <div className="flex flex-wrap gap-1">
                         {c.tags.length === 0 && (
-                          <span className="text-[11px] text-base-content/20">—</span>
+                          <span className="text-[11px] text-base-content/40">—</span>
                         )}
                         {c.tags.slice(0, 3).map((tag) => (
                           <span
@@ -139,11 +144,11 @@ export default async function CandidatesPage({
                           </span>
                         ))}
                         {c.tags.length > 3 && (
-                          <span className="text-[11px] text-base-content/40">+{c.tags.length - 3}</span>
+                          <span className="text-[11px] text-base-content/60">+{c.tags.length - 3}</span>
                         )}
                       </div>
                     </td>
-                    <td className="text-[11px] text-base-content/40 whitespace-nowrap">
+                    <td className="text-[11px] text-base-content/60 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("es-VE")}
                     </td>
                     <td>

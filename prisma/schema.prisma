@@ -19,6 +19,7 @@ model Client {
   users       User[]
   candidates  Candidate[]
   tags        Tag[]
+  vacancies   Vacancy[]
   emailConfig EmailConfig?
   wahaConfig  WahaConfig?
 }
@@ -37,6 +38,8 @@ model User {
   createdCandidates Candidate[]  @relation("CreatedBy")
   uploadedCandidates Candidate[] @relation("UploadedBy")
   ownedCandidates   Candidate[]  @relation("OwnedCandidates")
+  createdVacancies    Vacancy[]            @relation("CreatedVacancy")
+  assignedCandidates CandidateVacancy[]   @relation("AssignedCandidateVacancy")
   notes             Note[]
   activities        ActivityLog[]
 }
@@ -78,6 +81,7 @@ model Candidate {
   tags        Tag[]
   notes       Note[]
   activities  ActivityLog[]
+  vacancies   CandidateVacancy[]
 }
 
 enum CandidateSource {
@@ -155,4 +159,57 @@ model WahaConfig {
   sessionName String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+enum VacancyStatus {
+  OPEN
+  CLOSED
+  PAUSED
+}
+
+enum CandidateVacancyStage {
+  NEW
+  SCREENING
+  INTERVIEW
+  OFFER
+  HIRED
+  REJECTED
+}
+
+model Vacancy {
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String?
+  requirements String?
+  location     String?
+  modality     String?
+  salaryMin    Int?
+  salaryMax    Int?
+  status       VacancyStatus @default(OPEN)
+  closedAt     DateTime?
+
+  clientId    Int
+  client      Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdById Int?
+  createdBy   User?        @relation("CreatedVacancy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  candidates CandidateVacancy[]
+}
+
+model CandidateVacancy {
+  candidateId  Int
+  vacancyId    Int
+  stage        CandidateVacancyStage @default(NEW)
+  assignedAt   DateTime     @default(now())
+  assignedById Int?
+  assignedBy   User?        @relation("AssignedCandidateVacancy", fields: [assignedById], references: [id], onDelete: SetNull)
+  notes        String?
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  vacancy   Vacancy   @relation(fields: [vacancyId], references: [id], onDelete: Cascade)
+
+  @@id([candidateId, vacancyId])
 }

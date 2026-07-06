@@ -35,7 +35,7 @@ export function AdminNav({
             className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
               pathname.startsWith("/admin/users")
                 ? "bg-base-200 text-base-content font-medium"
-                : "text-base-content/50 hover:text-base-content hover:bg-base-200/50"
+                : "text-base-content/70 hover:text-base-content hover:bg-base-200/50"
             }`}
           >
             Usuarios
@@ -45,7 +45,7 @@ export function AdminNav({
             className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
               pathname.startsWith("/admin/clients")
                 ? "bg-base-200 text-base-content font-medium"
-                : "text-base-content/50 hover:text-base-content hover:bg-base-200/50"
+                : "text-base-content/70 hover:text-base-content hover:bg-base-200/50"
             }`}
           >
             Clientes
@@ -87,7 +87,7 @@ export function AdminNav({
                 <h6 className="text-sm font-semibold text-base-content">
                   {userName || "Usuario"}
                 </h6>
-                <small className="text-xs text-base-content/50">{userEmail}</small>
+                <small className="text-xs text-base-content/70">{userEmail}</small>
               </div>
             </li>
             <li>

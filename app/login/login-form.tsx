@@ -43,7 +43,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
             </div>
             <div className="text-center">
               <h1 className="text-xl font-bold tracking-tight">Destello</h1>
-              <p className="text-sm text-base-content/50 mt-1">
+              <p className="text-sm text-base-content/70 mt-1">
                 Inicia sesión para continuar
               </p>
             </div>

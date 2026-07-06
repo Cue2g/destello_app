@@ -46,7 +46,7 @@ export function ObservationsCard({ candidateId, observations }: ObservationsCard
   return (
     <div className="border border-base-300 bg-base-100 rounded-lg p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xs font-semibold text-base-content/50 uppercase tracking-widest flex items-center gap-2">
+        <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest flex items-center gap-2">
           <span className="icon-[tabler--notes] size-4 text-primary" />
           Observaciones
         </h2>
@@ -96,11 +96,11 @@ export function ObservationsCard({ candidateId, observations }: ObservationsCard
       ) : (
         <div>
           {observations ? (
-            <p className="text-sm text-base-content/70 whitespace-pre-wrap leading-relaxed">
+            <p className="text-sm text-base-content/80 whitespace-pre-wrap leading-relaxed">
               {observations}
             </p>
           ) : (
-            <p className="text-sm text-base-content/30 italic">
+            <p className="text-sm text-base-content/50 italic">
               Sin observaciones
             </p>
           )}
