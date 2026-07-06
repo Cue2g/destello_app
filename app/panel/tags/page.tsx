@@ -8,7 +8,10 @@ export default async function TagsPage() {
   const session = await auth()
   if (!session) redirect("/login")
 
+  const clientId = session.user.clientId!
+
   const tags = await prisma.tag.findMany({
+    where: { clientId },
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { candidates: true } } },
   })

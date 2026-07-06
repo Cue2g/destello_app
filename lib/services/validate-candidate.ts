@@ -7,7 +7,8 @@ export type CandidateValidationError =
 
 export async function validateCandidateData(
   data: { email?: string | null; phone?: string | null },
-  excludeId?: number
+  excludeId?: number,
+  clientId?: number,
 ): Promise<CandidateValidationError[]> {
   const errors: CandidateValidationError[] = []
 
@@ -22,9 +23,12 @@ export async function validateCandidateData(
     errors.push({ field: "phone", code: "missing" })
   }
 
+  const baseWhere: Record<string, unknown> = clientId ? { clientId } : {}
+
   if (email) {
     const existingEmail = await prisma.candidate.findFirst({
       where: {
+        ...baseWhere,
         email,
         ...(excludeId ? { id: { not: excludeId } } : {}),
       },
@@ -38,6 +42,7 @@ export async function validateCandidateData(
   if (phone) {
     const existingPhone = await prisma.candidate.findFirst({
       where: {
+        ...baseWhere,
         phone,
         ...(excludeId ? { id: { not: excludeId } } : {}),
       },

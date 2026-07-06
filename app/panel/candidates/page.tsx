@@ -1,5 +1,7 @@
 import Link from "next/link"
 import prisma from "@/lib/prisma"
+import { auth } from "@/auth"
+import { redirect } from "next/navigation"
 import { CandidateFilters } from "./candidate-filters"
 
 const statusLabels: Record<string, string> = {
@@ -35,11 +37,14 @@ export default async function CandidatesPage({
 }: {
   searchParams: Promise<{ source?: string; status?: string }>
 }) {
+  const session = await auth()
+  if (!session) redirect("/login")
+
   const sp = await searchParams
   const source = sp.source ?? ""
   const status = sp.status ?? ""
 
-  const where: Record<string, string> = {}
+  const where: Record<string, unknown> = { clientId: session.user.clientId! }
   if (source && ["WHATSAPP", "EMAIL", "UPLOAD"].includes(source)) {
     where.source = source
   }
@@ -48,7 +53,7 @@ export default async function CandidatesPage({
   }
 
   const candidates = await prisma.candidate.findMany({
-    where: Object.keys(where).length > 0 ? where : undefined,
+    where,
     include: { tags: true },
     orderBy: { createdAt: "desc" },
   })

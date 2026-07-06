@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation"
 import { createUser } from "@/lib/actions/create-user"
+import prisma from "@/lib/prisma"
+import { auth } from "@/auth"
 
-export default function CreateUserPage() {
+export default async function CreateUserPage() {
+  const session = await auth()
+  const clients = await prisma.client.findMany({ orderBy: { name: "asc" } })
+
   return (
     <div className="flex items-center justify-center">
       <div className="w-full max-w-sm">
@@ -74,15 +79,33 @@ export default function CreateUserPage() {
                 name="role"
                 className="input"
                 id="create-user-role"
-                defaultValue="VIEWER"
+                defaultValue="CLIENT"
               >
                 <option value="ADMIN">Admin</option>
-                <option value="VIEWER">Viewer</option>
+                <option value="CLIENT">Cliente</option>
               </select>
               <label className="input-floating-label" htmlFor="create-user-role">
                 Rol
               </label>
             </div>
+
+            {clients.length > 0 && (
+              <div className="input-floating">
+                <select
+                  name="clientId"
+                  className="input"
+                  id="create-user-client"
+                >
+                  <option value="">Sin cliente</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+                <label className="input-floating-label" htmlFor="create-user-client">
+                  Cliente
+                </label>
+              </div>
+            )}
 
             <button type="submit" className="btn btn-primary mt-1">
               Crear usuario

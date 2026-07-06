@@ -3,6 +3,7 @@ import Link from "next/link"
 
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
+    include: { client: { select: { name: true } } },
     orderBy: { createdAt: "desc" },
   })
 
@@ -22,6 +23,7 @@ export default async function UsersPage() {
               <th>Email</th>
               <th>Nombre</th>
               <th>Rol</th>
+              <th>Cliente</th>
               <th>Creado</th>
             </tr>
           </thead>
@@ -36,8 +38,11 @@ export default async function UsersPage() {
                       user.role === "ADMIN" ? "badge-accent" : "badge-ghost"
                     }`}
                   >
-                    {user.role}
+                    {user.role === "ADMIN" ? "Admin" : "Cliente"}
                   </span>
+                </td>
+                <td className="text-sm text-base-content/60">
+                  {user.client?.name || "—"}
                 </td>
                 <td className="text-xs text-base-content/40">
                   {user.createdAt.toLocaleDateString()}

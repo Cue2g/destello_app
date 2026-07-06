@@ -13,18 +13,18 @@ export async function GET(request: NextRequest) {
 
   const configs = await prisma.emailConfig.findMany({
     where: { isActive: true },
-    select: { userId: true, userEmail: true },
+    include: { client: { select: { name: true } } },
   })
 
-  const results: Array<{ userEmail: string; result: any }> = []
+  const results: Array<{ clientName: string; result: any }> = []
 
   for (const config of configs) {
     try {
-      const result = await syncEmails(config.userId)
-      results.push({ userEmail: config.userEmail, result })
+      const result = await syncEmails(config.clientId)
+      results.push({ clientName: config.client.name, result })
     } catch (err) {
       results.push({
-        userEmail: config.userEmail,
+        clientName: config.client.name,
         result: { error: (err as Error).message },
       })
     }

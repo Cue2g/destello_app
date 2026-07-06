@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
     const parsed = await parseCvFile(filePath, mimeType)
 
     const existingTags = await prisma.tag.findMany({
+      where: { clientId: session.user.clientId! },
       select: { id: true, name: true, color: true, prompt: true },
     })
 

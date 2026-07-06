@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation"
 import prisma from "@/lib/prisma"
+import { auth } from "@/auth"
+import { redirect } from "next/navigation"
 import { CandidateStatus } from "@/app/generated/prisma/enums"
 import { CandidateSource } from "@/app/generated/prisma/enums"
 import { DeleteCandidateButton } from "./delete-button"
@@ -93,13 +95,16 @@ export default async function CandidateDetailPage({
 }: {
   params: Promise<{ id: string }>
 }) {
+  const session = await auth()
+  if (!session) redirect("/login")
+
   const { id } = await params
   const candidate = await prisma.candidate.findUnique({
     where: { id: parseInt(id) },
     include: { tags: true },
   })
 
-  if (!candidate) {
+  if (!candidate || candidate.clientId !== session.user.clientId!) {
     notFound()
   }
 

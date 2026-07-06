@@ -136,14 +136,14 @@ export async function testImapConnection(config: {
   }
 }
 
-export async function syncEmails(userId: number): Promise<SyncResult> {
-  const config = await prisma.emailConfig.findUnique({ where: { userId } })
+export async function syncEmails(clientId: number): Promise<SyncResult> {
+  const config = await prisma.emailConfig.findUnique({ where: { clientId } })
   if (!config) {
-    console.log(`${LOG_PREFIX} No email config found for userId=${userId}`)
+    console.log(`${LOG_PREFIX} No email config found for clientId=${clientId}`)
     return { processedEmails: 0, candidatesCreated: 0, duplicates: 0, errors: 0, details: [] }
   }
 
-  console.log(`${LOG_PREFIX} Starting sync for userId=${userId}, email=${config.userEmail}, lastChecked=${config.lastChecked}`)
+  console.log(`${LOG_PREFIX} Starting sync for clientId=${clientId}, email=${config.userEmail}, lastChecked=${config.lastChecked}`)
 
   const password = decrypt(config.password)
   const imap = await connectImap({
@@ -226,6 +226,7 @@ export async function syncEmails(userId: number): Promise<SyncResult> {
           console.log(`${LOG_PREFIX}   Parsed CV: name="${cvData.name}", email="${cvData.email}", phone="${cvData.phone}"`)
 
           const existingTags = await prisma.tag.findMany({
+            where: { clientId },
             select: { id: true, name: true, color: true, prompt: true },
           })
 
@@ -244,7 +245,7 @@ export async function syncEmails(userId: number): Promise<SyncResult> {
           const validationErrors = await validateCandidateData({
             email: cvData.email,
             phone: cvData.phone,
-          })
+          }, undefined, clientId)
 
           if (validationErrors.length > 0) {
             await fs.unlink(filePath).catch(() => {})
@@ -281,8 +282,9 @@ export async function syncEmails(userId: number): Promise<SyncResult> {
               source: 'EMAIL',
               cvFilePath: relativePath,
               observations,
-              uploadedById: userId,
-              createdById: userId,
+              clientId,
+              uploadedById: null,
+              createdById: null,
               tags: suggestedTagIds.length > 0
                 ? { connect: suggestedTagIds.map(id => ({ id })) }
                 : undefined,
@@ -328,7 +330,7 @@ export async function syncEmails(userId: number): Promise<SyncResult> {
   }
 
   await prisma.emailConfig.update({
-    where: { userId },
+    where: { clientId },
     data: { lastChecked: new Date() },
   })
 

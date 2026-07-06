@@ -40,6 +40,16 @@ export function AdminNav({
           >
             Usuarios
           </Link>
+          <Link
+            href="/admin/clients"
+            className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+              pathname.startsWith("/admin/clients")
+                ? "bg-base-200 text-base-content font-medium"
+                : "text-base-content/50 hover:text-base-content hover:bg-base-200/50"
+            }`}
+          >
+            Clientes
+          </Link>
         </div>
       </div>
 
@@ -86,6 +96,12 @@ export function AdminNav({
                 Usuarios
               </Link>
             </li>
+            <li>
+              <Link href="/admin/clients" className="dropdown-item text-sm">
+                <span className="icon-[tabler--building-store] size-4" />
+                Clientes
+              </Link>
+            </li>
             <li className="dropdown-footer gap-2">
               <button
                 type="button"
@@ -123,6 +139,15 @@ export function AdminNav({
             >
               <span className="icon-[tabler--users] size-4" />
               Usuarios
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/admin/clients"
+              className={pathname.startsWith("/admin/clients") ? "active" : ""}
+            >
+              <span className="icon-[tabler--building-store] size-4" />
+              Clientes
             </Link>
           </li>
         </ul>

@@ -39,6 +39,40 @@ export default function AdminDashboard() {
             </div>
           </div>
         </Link>
+
+        <Link
+          href="/admin/clients"
+          className="border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
+        >
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="icon-[tabler--building-store] size-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold">Clientes</h2>
+              <p className="text-xs text-base-content/50 mt-1">
+                Gestionar clientes del sistema
+              </p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/clients/create"
+          className="border border-base-300 bg-base-100 rounded-lg p-6 hover:border-primary/50 transition-colors"
+        >
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="icon-[tabler--building-plus] size-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold">Crear cliente</h2>
+              <p className="text-xs text-base-content/50 mt-1">
+                Registrar un nuevo cliente
+              </p>
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   )

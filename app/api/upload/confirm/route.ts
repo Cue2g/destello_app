@@ -23,6 +23,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   try {
     const body = await request.json()
     const { name, email, phone, address, education, experience, skills, courses, summary, rawText, fileName, filePath, tagIds } = body
@@ -31,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Falta el archivo" }, { status: 400 })
     }
 
-    const validationErrors = await validateCandidateData({ email, phone })
+    const validationErrors = await validateCandidateData({ email, phone }, undefined, session.user.clientId)
     if (validationErrors.length > 0) {
       await deleteUploadFile(filePath)
       return NextResponse.json(
@@ -58,6 +62,7 @@ export async function POST(request: NextRequest) {
         rawText: rawText || null,
         source: "UPLOAD",
         cvFilePath: filePath || null,
+        clientId: session.user.clientId,
         uploadedById: parseInt(session.user.id),
         createdById: parseInt(session.user.id),
         tags: tagConnect,

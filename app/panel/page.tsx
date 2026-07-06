@@ -1,4 +1,6 @@
 import prisma from "@/lib/prisma"
+import { auth } from "@/auth"
+import { redirect } from "next/navigation"
 import { CandidateSource, CandidateStatus } from "@/app/generated/prisma/enums"
 
 const sourceLabels: Record<CandidateSource, string> = {
@@ -38,10 +40,14 @@ const statusColors: Record<CandidateStatus, string> = {
 const pipelineOrder: CandidateStatus[] = ["NEW", "REVIEWED", "CONTACTED", "HIRED", "REJECTED"]
 
 export default async function PanelDashboard() {
+  const session = await auth()
+  if (!session) redirect("/login")
+
+  const clientId = session.user.clientId!
   const [total, bySource, byStatus] = await Promise.all([
-    prisma.candidate.count(),
-    prisma.candidate.groupBy({ by: ["source"], _count: { _all: true } }),
-    prisma.candidate.groupBy({ by: ["status"], _count: { _all: true } }),
+    prisma.candidate.count({ where: { clientId } }),
+    prisma.candidate.groupBy({ by: ["source"], where: { clientId }, _count: { _all: true } }),
+    prisma.candidate.groupBy({ by: ["status"], where: { clientId }, _count: { _all: true } }),
   ])
 
   const sourceCounts = Object.fromEntries(

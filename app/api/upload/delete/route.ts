@@ -12,10 +12,16 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   try {
     const id = parseInt(request.nextUrl.searchParams.get("id") || "")
 
-    const candidate = await prisma.candidate.findUnique({ where: { id } })
+    const candidate = await prisma.candidate.findFirst({
+      where: { id, clientId: session.user.clientId },
+    })
     if (!candidate) {
       return NextResponse.json({ error: "Candidato no encontrado" }, { status: 404 })
     }

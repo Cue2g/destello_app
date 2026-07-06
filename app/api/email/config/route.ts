@@ -12,8 +12,12 @@ export async function GET() {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ config: null })
+  }
+
   const config = await prisma.emailConfig.findUnique({
-    where: { userId: parseInt(session.user.id) },
+    where: { clientId: session.user.clientId },
   })
 
   if (!config) {
@@ -38,6 +42,10 @@ export async function POST(request: NextRequest) {
   const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
   }
 
   try {
@@ -65,7 +73,7 @@ export async function POST(request: NextRequest) {
     const encryptedPassword = encrypt(password)
 
     const config = await prisma.emailConfig.upsert({
-      where: { userId: parseInt(session.user.id) },
+      where: { clientId: session.user.clientId },
       update: {
         provider: provider || 'CUSTOM',
         host,
@@ -76,7 +84,7 @@ export async function POST(request: NextRequest) {
         isActive: isActive !== false,
       },
       create: {
-        userId: parseInt(session.user.id),
+        clientId: session.user.clientId,
         provider: provider || 'CUSTOM',
         host,
         port: portNum,
@@ -112,8 +120,12 @@ export async function DELETE() {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   await prisma.emailConfig.deleteMany({
-    where: { userId: parseInt(session.user.id) },
+    where: { clientId: session.user.clientId },
   })
 
   return NextResponse.json({ success: true })

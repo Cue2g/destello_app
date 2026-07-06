@@ -10,6 +10,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   try {
     const { name, color, prompt } = await request.json()
 
@@ -17,7 +21,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "El nombre es requerido" }, { status: 400 })
     }
 
-    const existing = await prisma.tag.findUnique({ where: { name: name.trim() } })
+    const existing = await prisma.tag.findUnique({
+      where: { name_clientId: { name: name.trim(), clientId: session.user.clientId } },
+    })
     if (existing) {
       return NextResponse.json({ error: "Ya existe un tag con ese nombre" }, { status: 409 })
     }
@@ -27,6 +33,7 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         color: color || "#3b82f6",
         prompt: prompt || null,
+        clientId: session.user.clientId,
       },
     })
 
@@ -43,6 +50,10 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   try {
     const { id, name, color, prompt } = await request.json()
 
@@ -50,7 +61,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "ID requerido" }, { status: 400 })
     }
 
-    const tag = await prisma.tag.update({
+    const tag = await prisma.tag.findFirst({
+      where: { id, clientId: session.user.clientId },
+    })
+    if (!tag) {
+      return NextResponse.json({ error: "Tag no encontrado" }, { status: 404 })
+    }
+
+    const updated = await prisma.tag.update({
       where: { id },
       data: {
         name: name?.trim(),
@@ -59,7 +77,7 @@ export async function PUT(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ success: true, id: tag.id })
+    return NextResponse.json({ success: true, id: updated.id })
   } catch (err) {
     console.error("Tag update error:", err)
     return NextResponse.json({ error: (err as Error).message }, { status: 500 })
@@ -72,8 +90,19 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   try {
     const id = parseInt(request.nextUrl.searchParams.get("id") || "")
+
+    const tag = await prisma.tag.findFirst({
+      where: { id, clientId: session.user.clientId },
+    })
+    if (!tag) {
+      return NextResponse.json({ error: "Tag no encontrado" }, { status: 404 })
+    }
 
     await prisma.tag.delete({ where: { id } })
 

@@ -13,6 +13,10 @@ export default async function PanelLayout({
     redirect("/login")
   }
 
+  if (session.user.role !== "CLIENT") {
+    redirect("/admin")
+  }
+
   return (
     <PanelShell userName={session.user.name}>
       {children}

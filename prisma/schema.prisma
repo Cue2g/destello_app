@@ -7,31 +7,45 @@ datasource db {
   provider = "postgresql"
 }
 
-// 1. USUARIOS
-model User {
-  id                Int            @id @default(autoincrement())
-  email             String         @unique
-  name              String?
-  passwordHash      String
-  role              UserRole       @default(ADMIN)
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+model Client {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  phone       String?
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
-  createdCandidates Candidate[]    @relation("CreatedBy")
-  uploadedCandidates Candidate[]   @relation("UploadedBy")
-  ownedCandidates   Candidate[]    @relation("OwnedCandidates")
-  emailConfig       EmailConfig?
-  wahaConfig        WahaConfig?
+  users       User[]
+  candidates  Candidate[]
+  tags        Tag[]
+  emailConfig EmailConfig?
+  wahaConfig  WahaConfig?
+}
+
+model User {
+  id              Int            @id @default(autoincrement())
+  email           String         @unique
+  name            String?
+  passwordHash    String
+  role            UserRole       @default(CLIENT)
+  clientId        Int?
+  client          Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  createdCandidates Candidate[]  @relation("CreatedBy")
+  uploadedCandidates Candidate[] @relation("UploadedBy")
+  ownedCandidates   Candidate[]  @relation("OwnedCandidates")
   notes             Note[]
   activities        ActivityLog[]
 }
 
 enum UserRole {
   ADMIN
-  VIEWER
+  CLIENT
 }
 
-// 2. CANDIDATOS
 model Candidate {
   id           Int             @id @default(autoincrement())
   name         String?
@@ -49,6 +63,8 @@ model Candidate {
   status       CandidateStatus @default(NEW)
   observations String?
 
+  clientId    Int
+  client      Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   ownerId     Int?
   owner       User?           @relation("OwnedCandidates", fields: [ownerId], references: [id], onDelete: SetNull)
   createdById Int?
@@ -78,18 +94,20 @@ enum CandidateStatus {
   HIRED
 }
 
-// 3. ETIQUETAS
 model Tag {
   id         Int         @id @default(autoincrement())
-  name       String      @unique
+  name       String
   color      String      @default("#3b82f6")
   prompt     String?
+  clientId   Int
+  client     Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
   createdAt  DateTime    @default(now())
 
   candidates Candidate[]
+
+  @@unique([name, clientId])
 }
 
-// 4. NOTAS
 model Note {
   id          Int       @id @default(autoincrement())
   content     String
@@ -101,7 +119,6 @@ model Note {
   updatedAt   DateTime  @updatedAt
 }
 
-// 5. LOG DE ACTIVIDAD
 model ActivityLog {
   id          Int       @id @default(autoincrement())
   candidateId Int
@@ -113,11 +130,10 @@ model ActivityLog {
   createdAt   DateTime  @default(now())
 }
 
-// 6. CONFIGURACIÓN DE EMAIL (por usuario)
 model EmailConfig {
   id          Int       @id @default(autoincrement())
-  userId      Int       @unique
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientId    Int       @unique
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   provider    String    @default("CUSTOM")
   host        String
   port        Int       @default(993)
@@ -130,11 +146,10 @@ model EmailConfig {
   updatedAt   DateTime  @updatedAt
 }
 
-// 7. CONFIGURACIÓN DE WAHA (WhatsApp API, por usuario)
 model WahaConfig {
   id          Int       @id @default(autoincrement())
-  userId      Int       @unique
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientId    Int       @unique
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   apiUrl      String
   apiKey      String?
   sessionName String?

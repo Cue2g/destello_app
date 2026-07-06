@@ -10,8 +10,12 @@ export async function POST() {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  if (!session.user.clientId) {
+    return NextResponse.json({ error: "El usuario no tiene un cliente asignado" }, { status: 400 })
+  }
+
   try {
-    const result = await syncEmails(parseInt(session.user.id))
+    const result = await syncEmails(session.user.clientId)
     return NextResponse.json(result)
   } catch (err) {
     console.error("Email sync error:", err)
