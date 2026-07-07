@@ -4,7 +4,7 @@ export default auth((req) => {
   const { pathname } = req.nextUrl
   const session = req.auth
 
-  const publicPaths = ["/login", "/api/auth"]
+  const publicPaths = ["/", "/login", "/api/auth"]
   if (publicPaths.some((p) => pathname.startsWith(p))) {
     return
   }

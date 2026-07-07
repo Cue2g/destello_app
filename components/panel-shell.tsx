@@ -23,24 +23,26 @@ export function PanelShell({
         />
       </div>
 
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-50">
-          <PanelSidebar
-            userName={userName}
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-          />
-        </div>
-      )}
+      {/* Mobile sidebar wrapper */}
+      <div
+        className={`md:hidden fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <PanelSidebar
+          userName={userName}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+      </div>
 
       {/* Mobile backdrop */}
-      {sidebarOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-40 bg-neutral/50"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <div
+        className={`md:hidden fixed inset-0 z-40 bg-neutral/50 transition-opacity duration-300 ${
+          sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setSidebarOpen(false)}
+      />
 
       {/* Mobile hamburger opener */}
       <button

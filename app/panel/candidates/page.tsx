@@ -71,7 +71,7 @@ export default async function CandidatesPage({
       </div>
 
       {candidates.length === 0 ? (
-        <div className="intersect:motion-preset-pop intersect:motion-opacity-in-0 intersect:motion-duration-700 border border-base-300 bg-base-100 rounded-lg">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth intersect:motion-duration-700 border border-base-300 bg-base-100 rounded-lg">
           <div className="flex flex-col items-center justify-center py-16 gap-4">
             <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/50">
               <span className="icon-[tabler--users] size-6" />
@@ -84,7 +84,7 @@ export default async function CandidatesPage({
           </div>
         </div>
       ) : (
-        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg overflow-hidden">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="table table-sm">
               <thead>

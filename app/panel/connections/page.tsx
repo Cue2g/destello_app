@@ -160,7 +160,7 @@ export default function ConnectionsPage() {
 
       {config ? (
         // Estado y Sincronización (cuando hay config)
-        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col items-center gap-3 mb-6">
             <div className="flex size-10 items-center justify-center rounded-full bg-success/10 text-success">
               <span className="icon-[tabler--mail-check] size-5" />
@@ -218,7 +218,7 @@ export default function ConnectionsPage() {
         </div>
       ) : (
         // Configuración de Email (cuando no hay config)
-        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col items-center gap-3 mb-6">
             <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
               <span className="icon-[tabler--mail] size-5" />

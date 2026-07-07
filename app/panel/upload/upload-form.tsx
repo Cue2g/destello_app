@@ -137,6 +137,7 @@ export function UploadForm() {
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
   const [dragOver, setDragOver] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [success, setSuccess] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
@@ -163,6 +164,7 @@ export function UploadForm() {
     e.preventDefault()
     setPending(true)
     setError(null)
+    setSuccess(false)
 
     const formData = new FormData(e.currentTarget)
     const file = formData.get("file") as File
@@ -253,9 +255,10 @@ export function UploadForm() {
     setPreview(null)
     setSelectedTagIds([])
     setSelectedFile(null)
+    setSaving(false)
+    setSuccess(true)
+    setStep("upload")
     if (fileInputRef.current) fileInputRef.current.value = ''
-    router.push(`/panel/candidates/${data.id}`)
-    router.refresh()
   }
 
   function handleCancel() {
@@ -264,12 +267,21 @@ export function UploadForm() {
     setSelectedFile(null)
     setStep("upload")
     setError(null)
+    setSuccess(false)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   if (step === "review" && preview) {
     return (
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6 relative">
+        {saving && (
+          <div className="absolute inset-0 bg-base-100/80 rounded-lg flex items-center justify-center z-50">
+            <div className="flex flex-col items-center gap-2">
+              <span className="icon-[tabler--loader-2] size-8 text-primary animate-spin" />
+              <span className="text-sm text-base-content/75 font-medium">Guardando candidato...</span>
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-4">
           <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
             <span className="icon-[tabler--file-text] size-7" />
@@ -384,6 +396,32 @@ export function UploadForm() {
             </p>
           </div>
         </header>
+        {success && (
+          <div className="bg-success/10 text-success border border-success/30 rounded-lg p-4 flex items-start gap-3 w-full">
+            <span className="icon-[tabler--circle-check] size-5 shrink-0 mt-0.5" />
+            <div className="flex-1 text-sm">
+              <p className="font-medium">Candidato guardado exitosamente</p>
+              <p className="text-success/80 mt-0.5">Puedes buscarlo en la sección Candidatos.</p>
+            </div>
+            <div className="flex items-center gap-2 ml-2 shrink-0">
+              <button
+                type="button"
+                className="btn btn-sm btn-success"
+                onClick={() => router.push("/panel/candidates")}
+              >
+                Ir a Candidatos
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm text-success/70 hover:text-success px-1"
+                onClick={() => setSuccess(false)}
+              >
+                <span className="icon-[tabler--x] size-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="border border-base-300 bg-base-100 rounded-lg w-full p-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {error && (

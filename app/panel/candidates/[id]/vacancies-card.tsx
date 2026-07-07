@@ -87,7 +87,7 @@ export function VacanciesCard({ candidateId, initialVacancies }: Props) {
   }
 
   return (
-    <div className="border border-base-300 bg-base-100 rounded-lg p-5">
+    <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest flex items-center gap-2">
           <span className="icon-[tabler--briefcase] size-4 text-primary" />

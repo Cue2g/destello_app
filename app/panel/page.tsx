@@ -78,10 +78,10 @@ export default async function PanelDashboard() {
       <div>
         <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4">Por plataforma</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {(Object.keys(sourceLabels) as CandidateSource[]).map((src) => (
+          {(Object.keys(sourceLabels) as CandidateSource[]).map((src, i) => (
             <div
               key={src}
-              className="border border-base-300 bg-base-100 rounded-lg p-5 flex items-center gap-4"
+              className={`intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-5 flex items-center gap-4 ${["","intersect:motion-delay-[100ms]","intersect:motion-delay-[200ms]"][i]}`}
             >
               <div
                 className={`flex size-10 items-center justify-center rounded-full shrink-0 ${sourceColors[src]}`}
@@ -100,7 +100,7 @@ export default async function PanelDashboard() {
       {/* Por estado - pipeline */}
       <div>
         <h2 className="text-xs font-semibold text-base-content/70 uppercase tracking-widest mb-4">Pipeline de candidatos</h2>
-        <div className="border border-base-300 bg-base-100 rounded-lg p-6">
+        <div className="intersect:motion-preset-slide-up intersect:motion-opacity-in-0 intersect-half motion-ease-spring-smooth border border-base-300 bg-base-100 rounded-lg p-6">
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3 sm:gap-0">
             {pipelineOrder.map((st, i) => (
               <div

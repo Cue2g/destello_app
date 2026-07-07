@@ -49,7 +49,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
             </div>
           </header>
 
-          <form onSubmit={handleSubmit} className="card bg-base-100 w-full motion-preset-slide-up motion-duration-700 motion-delay-200">
+          <form onSubmit={handleSubmit} className="card bg-base-100 w-full motion-preset-slide-up motion-opacity-in-0 motion-ease-spring-smooth motion-duration-700 motion-delay-200">
             <div className="card-body p-6 gap-6">
               {error && (
                 <div className="text-sm text-error flex items-center gap-2 justify-center">
