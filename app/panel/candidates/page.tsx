@@ -60,12 +60,12 @@ export default async function CandidatesPage({
   })
 
   return (
-    <div className="space-y-6 motion-preset-fade motion-duration-500">
+    <div className="space-y-6">
       <PageHeader
         breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Candidatos" }]}
         backHref="/panel"
       />
-      <div className="flex items-center justify-between motion-preset-slide-up motion-duration-500">
+      <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold tracking-tight">Candidatos</h1>
         <CandidateFilters source={source} status={status} />
       </div>
@@ -73,7 +73,7 @@ export default async function CandidatesPage({
       {candidates.length === 0 ? (
         <div className="intersect:motion-preset-pop intersect:motion-opacity-in-0 intersect:motion-duration-700 border border-base-300 bg-base-100 rounded-lg">
           <div className="flex flex-col items-center justify-center py-16 gap-4">
-            <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/50 motion-preset-bounce motion-duration-1000">
+            <div className="flex size-12 items-center justify-center rounded-full bg-base-200 text-base-content/50">
               <span className="icon-[tabler--users] size-6" />
             </div>
             <p className="text-sm text-base-content/70">

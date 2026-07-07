@@ -1,8 +1,7 @@
 import { auth } from "@/auth"
 import { NextRequest, NextResponse } from "next/server"
-import fs from "fs/promises"
-import path from "path"
 import prisma from "@/lib/prisma"
+import { deleteFile } from "@/lib/gcs"
 
 export const runtime = 'nodejs'
 
@@ -27,11 +26,11 @@ export async function DELETE(request: NextRequest) {
     }
 
     if (candidate.cvFilePath) {
-      const filePath = path.join(process.cwd(), "public", candidate.cvFilePath)
       try {
-        await fs.unlink(filePath)
-      } catch {
-        // file may not exist, ignore
+        await deleteFile(candidate.cvFilePath)
+      } catch (err) {
+        console.error("[DELETE /api/upload/delete] Error al eliminar archivo de GCS:", err)
+        return NextResponse.json({ error: "Error al eliminar el CV del almacenamiento" }, { status: 500 })
       }
     }
 

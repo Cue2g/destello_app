@@ -36,7 +36,7 @@ export function PageHeader({
   })
 
   return (
-    <div className="flex items-center gap-2 mb-6 motion-preset-fade motion-duration-500">
+    <div className="flex items-center gap-2 mb-6">
       {backHref && (
         <Link href={backHref} className="btn btn-ghost btn-xs shrink-0">
           <span className="icon-[tabler--arrow-left] size-4" />

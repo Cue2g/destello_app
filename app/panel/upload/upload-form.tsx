@@ -23,8 +23,6 @@ type ParsedData = {
 }
 
 type PreviewData = ParsedData & {
-  fileName: string
-  filePath: string
   rawText: string
 }
 
@@ -131,6 +129,7 @@ function getFileIcon(name: string): string {
 }
 
 export function UploadForm() {
+  const [step, setStep] = useState<"upload" | "review">("upload")
   const [pending, setPending] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -198,7 +197,8 @@ export function UploadForm() {
 
     const suggestedIds = (parsed.suggestedTags || []).map((t: TagInfo) => t.id)
     setSelectedTagIds(suggestedIds)
-    setPreview({ ...parsed, fileName: data.fileName, filePath: data.filePath, rawText: data.cleanedText || '' })
+    setPreview({ ...parsed, rawText: data.cleanedText || '' })
+    setStep("review")
     setPending(false)
   }
 
@@ -210,26 +210,29 @@ export function UploadForm() {
 
   async function handleConfirm() {
     if (!preview) return
+    if (!selectedFile) {
+      setError("El archivo ya no está disponible. Vuelve a subirlo.")
+      return
+    }
     setSaving(true)
+
+    const formData = new FormData()
+    formData.append("file", selectedFile)
+    formData.append("name", preview.name)
+    formData.append("email", preview.email)
+    formData.append("phone", preview.phone)
+    formData.append("address", preview.address)
+    formData.append("summary", preview.summary)
+    formData.append("rawText", preview.rawText)
+    formData.append("education", JSON.stringify(preview.education))
+    formData.append("experience", JSON.stringify(preview.experience))
+    formData.append("skills", JSON.stringify(preview.skills))
+    formData.append("courses", JSON.stringify(preview.courses))
+    formData.append("tagIds", JSON.stringify(selectedTagIds))
 
     const res = await fetch("/api/upload/confirm", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: preview.name,
-        email: preview.email,
-        phone: preview.phone,
-        address: preview.address,
-        education: preview.education,
-        experience: preview.experience,
-        skills: preview.skills,
-        courses: preview.courses,
-        summary: preview.summary,
-        rawText: preview.rawText,
-        fileName: preview.fileName,
-        filePath: preview.filePath,
-        tagIds: selectedTagIds,
-      }),
+      body: formData,
     })
 
     const data = await res.json()
@@ -241,6 +244,7 @@ export function UploadForm() {
         setPreview(null)
         setSelectedFile(null)
         setSelectedTagIds([])
+        setStep("upload")
         if (fileInputRef.current) fileInputRef.current.value = ''
       }
       return
@@ -257,11 +261,85 @@ export function UploadForm() {
   function handleCancel() {
     setPreview(null)
     setSelectedTagIds([])
+    setSelectedFile(null)
+    setStep("upload")
+    setError(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  return (
-    <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+  if (step === "review" && preview) {
+    return (
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+            <span className="icon-[tabler--file-text] size-7" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">Vista previa</h2>
+            <p className="text-sm text-base-content/75">
+              {preview.name ? `Datos extraídos de ${preview.name}` : 'Datos extraídos del CV'}
+            </p>
+          </div>
+        </div>
+
+        <div className="divider my-0" />
+
+        <div className="grid lg:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Nombre" value={preview.name} />
+              <Field label="Email" value={preview.email} />
+              <Field label="Teléfono" value={preview.phone} />
+              <Field label="Dirección" value={preview.address} />
+            </div>
+
+            {preview.skills.length > 0 && <BadgeField label="Skills" items={preview.skills} />}
+
+            {preview.summary && (
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Resumen</span>
+                <p className="text-sm text-base-content leading-relaxed">{preview.summary}</p>
+              </div>
+            )}
+
+            {preview.suggestedTags.length > 0 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Tags sugeridos</span>
+                <div className="flex flex-wrap gap-2">
+                  {preview.suggestedTags.map((tag) => {
+                    const selected = selectedTagIds.includes(tag.id)
+                    return (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => toggleTag(tag.id)}
+                        className={`badge cursor-pointer transition-all gap-1 ${selected ? "" : "opacity-40"}`}
+                        style={{
+                          backgroundColor: selected ? tag.color + "20" : "transparent",
+                          color: tag.color,
+                          borderColor: tag.color + "40",
+                        }}
+                      >
+                        <span className="size-2 rounded-full" style={{ backgroundColor: tag.color }} />
+                        {tag.name}
+                        <span className={`icon-[tabler--${selected ? "check" : "plus"}] size-3`} />
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <ExperienceCards items={preview.experience} />
+            <EducationCards items={preview.education} />
+            <CourseCards items={preview.courses} />
+          </div>
+        </div>
+
+        <div className="divider my-0" />
+
         {error && (
           <div className="text-sm text-error flex items-center gap-1">
             <span className="icon-[tabler--alert-circle] size-4 shrink-0" />
@@ -269,211 +347,159 @@ export function UploadForm() {
           </div>
         )}
 
-        <div
-          className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors motion-preset-pulse motion-duration-2000 motion-loop-once ${
-            dragOver
-              ? 'border-primary bg-primary/5'
-              : 'border-base-300 hover:border-primary/50'
-          }`}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault()
-            setDragOver(false)
-            const file = e.dataTransfer.files[0]
-            if (file) handleFile(file)
-          }}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            name="file"
-            accept=".pdf,.docx,.doc,.png,.jpg,.jpeg"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files?.[0]) handleFile(e.target.files[0])
-            }}
-            required
-          />
-
-          {pending && (
-            <div className="absolute inset-0 bg-base-100/60 rounded-xl flex items-center justify-center z-10">
-              <div className="flex flex-col items-center gap-2">
-                <span className="icon-[tabler--loader-2] size-7 text-primary animate-spin" />
-                <span className="text-sm text-base-content/75 font-medium">Procesando archivo...</span>
-              </div>
-            </div>
-          )}
-
-          {selectedFile && !pending ? (
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <span className={`icon-[${getFileIcon(selectedFile.name)}] size-7`} />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-base-content">{selectedFile.name}</p>
-                <p className="text-xs text-base-content/75 mt-0.5">
-                  {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
-                </p>
-              </div>
-              <button
-                type="button"
-                className="text-xs text-primary hover:underline"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedFile(null)
-                  setError(null)
-                  if (fileInputRef.current) fileInputRef.current.value = ''
-                }}
-              >
-                Cambiar archivo
-              </button>
-            </div>
-          ) : !pending ? (
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <span className="icon-[tabler--file-upload] size-7" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-base-content">
-                  Arrastra tu archivo aquí
-                </p>
-                <p className="text-xs text-base-content/75 mt-1">
-                  o haz clic para seleccionar
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-1">
-                <span className="badge badge-sm gap-1">
-                  <span className="icon-[tabler--file-type-pdf] size-3.5" />
-                  PDF
-                </span>
-                <span className="badge badge-sm gap-1">
-                  <span className="icon-[tabler--file-text] size-3.5" />
-                  DOCX
-                </span>
-                <span className="badge badge-sm gap-1">
-                  <span className="icon-[tabler--photo] size-3.5" />
-                  PNG
-                </span>
-                <span className="badge badge-sm gap-1">
-                  <span className="icon-[tabler--photo] size-3.5" />
-                  JPG
-                </span>
-              </div>
-            </div>
-          ) : null}
+        <div className="flex gap-3">
+          <button
+            type="button"
+            className="btn btn-ghost flex-1"
+            onClick={handleCancel}
+            disabled={saving}
+          >
+            Subir otro CV
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary flex-1"
+            onClick={handleConfirm}
+            disabled={saving}
+          >
+            <span className="icon-[tabler--check] size-5" />
+            {saving ? "Guardando..." : "Confirmar"}
+          </button>
         </div>
+      </div>
+    )
+  }
 
-        <button
-          type="submit"
-          className="btn btn-primary w-full"
-          disabled={pending || !selectedFile}
-        >
-          <span className="icon-[tabler--file-upload] size-5" />
-          {pending ? "Procesando..." : "Subir y procesar"}
-        </button>
-      </form>
-
-      {preview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 motion-preset-fade motion-duration-300">
-          <div className="card bg-base-100 shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto motion-preset-slide-up motion-duration-300">
-            <div className="card-body gap-6">
-              <header className="flex flex-col items-center gap-3">
-                <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <span className="icon-[tabler--file-text] size-7" />
-                </div>
-                <div className="text-center">
-                  <h2 className="text-xl font-bold">Vista previa</h2>
-                  <p className="text-sm text-base-content/75 mt-1">
-                    Datos extraídos del CV
-                  </p>
-                </div>
-              </header>
-
-              <div className="divider my-0" />
-
-              <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="Nombre" value={preview.name} />
-                  <Field label="Email" value={preview.email} />
-                  <Field label="Teléfono" value={preview.phone} />
-                  <Field label="Dirección" value={preview.address} />
-                </div>
-
-                <ExperienceCards items={preview.experience} />
-                <BadgeField label="Skills" items={preview.skills} />
-                <EducationCards items={preview.education} />
-                <CourseCards items={preview.courses} />
-
-                {preview.summary && (
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Resumen</span>
-                    <p className="text-sm text-base-content leading-relaxed">{preview.summary}</p>
-                  </div>
-                )}
-
-                {preview.suggestedTags.length > 0 && (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-xs text-base-content/60 uppercase tracking-wider font-medium">Tags sugeridos</span>
-                    <div className="flex flex-wrap gap-2">
-                      {preview.suggestedTags.map((tag) => {
-                        const selected = selectedTagIds.includes(tag.id)
-                        return (
-                          <button
-                            key={tag.id}
-                            type="button"
-                            onClick={() => toggleTag(tag.id)}
-                            className={`badge cursor-pointer transition-all gap-1 ${
-                              selected ? "" : "opacity-40"
-                            }`}
-                            style={{
-                              backgroundColor: selected ? tag.color + "20" : "transparent",
-                              color: tag.color,
-                              borderColor: tag.color + "40",
-                            }}
-                          >
-                            <span
-                              className="size-2 rounded-full"
-                              style={{ backgroundColor: tag.color }}
-                            />
-                            {tag.name}
-                            <span
-                              className={`icon-[tabler--${selected ? "check" : "plus"}] size-3`}
-                            />
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="divider my-0" />
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  className="btn btn-ghost flex-1"
-                  onClick={handleCancel}
-                  disabled={saving}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary flex-1"
-                  onClick={handleConfirm}
-                  disabled={saving}
-                >
-                  <span className="icon-[tabler--check] size-5" />
-                  {saving ? "Guardando..." : "Confirmar"}
-                </button>
-              </div>
-            </div>
+  return (
+    <div className="max-w-sm mx-auto">
+      <div className="flex flex-col items-center gap-6">
+        <header className="flex flex-col items-center gap-3">
+          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <span className="icon-[tabler--file-upload] size-6" />
           </div>
+          <div className="text-center">
+            <h1 className="text-lg font-bold tracking-tight">Subir CV</h1>
+            <p className="text-xs text-base-content/70 mt-1">
+              PDF, DOCX o imagen. Extraemos los datos automáticamente.
+            </p>
+          </div>
+        </header>
+        <div className="border border-base-300 bg-base-100 rounded-lg w-full p-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {error && (
+              <div className="text-sm text-error flex items-center gap-1">
+                <span className="icon-[tabler--alert-circle] size-4 shrink-0" />
+                {error}
+              </div>
+            )}
+
+            <div
+              className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+                dragOver
+                  ? 'border-primary bg-primary/5'
+                  : 'border-base-300 hover:border-primary/50'
+              }`}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault()
+                setDragOver(false)
+                const file = e.dataTransfer.files[0]
+                if (file) handleFile(file)
+              }}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                name="file"
+                accept=".pdf,.docx,.doc,.png,.jpg,.jpeg"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) handleFile(e.target.files[0])
+                }}
+                required
+              />
+
+              {pending && (
+                <div className="absolute inset-0 bg-base-100/60 rounded-xl flex items-center justify-center z-10">
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="icon-[tabler--loader-2] size-7 text-primary animate-spin" />
+                    <span className="text-sm text-base-content/75 font-medium">Procesando archivo...</span>
+                  </div>
+                </div>
+              )}
+
+              {selectedFile && !pending ? (
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span className={`icon-[${getFileIcon(selectedFile.name)}] size-7`} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-base-content">{selectedFile.name}</p>
+                    <p className="text-xs text-base-content/75 mt-0.5">
+                      {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-xs text-primary hover:underline"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedFile(null)
+                      setError(null)
+                      if (fileInputRef.current) fileInputRef.current.value = ''
+                    }}
+                  >
+                    Cambiar archivo
+                  </button>
+                </div>
+              ) : !pending ? (
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span className="icon-[tabler--file-upload] size-7" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-base-content">
+                      Arrastra tu archivo aquí
+                    </p>
+                    <p className="text-xs text-base-content/75 mt-1">
+                      o haz clic para seleccionar
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    <span className="badge badge-sm gap-1">
+                      <span className="icon-[tabler--file-type-pdf] size-3.5" />
+                      PDF
+                    </span>
+                    <span className="badge badge-sm gap-1">
+                      <span className="icon-[tabler--file-text] size-3.5" />
+                      DOCX
+                    </span>
+                    <span className="badge badge-sm gap-1">
+                      <span className="icon-[tabler--photo] size-3.5" />
+                      PNG
+                    </span>
+                    <span className="badge badge-sm gap-1">
+                      <span className="icon-[tabler--photo] size-3.5" />
+                      JPG
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={pending || !selectedFile}
+            >
+              <span className="icon-[tabler--file-upload] size-5" />
+              {pending ? "Procesando..." : "Subir y procesar"}
+            </button>
+          </form>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   )
 }

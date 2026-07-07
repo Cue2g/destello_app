@@ -9,14 +9,14 @@ export default async function UsersPage() {
   })
 
   return (
-    <div className="motion-preset-fade motion-duration-500">
+    <div>
       <PageHeader
         breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Usuarios" }]}
         backHref="/admin"
       />
-      <div className="flex items-center justify-between mb-6 motion-preset-slide-up motion-duration-500">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-bold tracking-tight">Usuarios</h1>
-        <Link href="/admin/users/create" className="btn btn-primary btn-sm active:motion-preset-compress">
+        <Link href="/admin/users/create" className="btn btn-primary btn-sm">
           Nuevo usuario
         </Link>
       </div>

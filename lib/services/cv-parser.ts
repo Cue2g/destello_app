@@ -1,5 +1,4 @@
 import { GoogleGenAI } from '@google/genai'
-import fs from 'fs/promises'
 
 export interface Experience {
   title: string
@@ -99,13 +98,12 @@ const CV_SCHEMA = {
   },
 }
 
-export async function parseCvFile(filePath: string, mimeType: string): Promise<CvParseResult> {
+export async function parseCvFile(buffer: Buffer, mimeType: string): Promise<CvParseResult> {
   if (!process.env.GEMINI_API_KEY) {
     throw new Error('GEMINI_API_KEY not set')
   }
 
-  const fileBuffer = await fs.readFile(filePath)
-  const base64 = fileBuffer.toString('base64')
+  const base64 = buffer.toString('base64')
 
   const response = await getClient().models.generateContent({
     model: MODEL,

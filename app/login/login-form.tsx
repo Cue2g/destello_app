@@ -35,10 +35,10 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
-      <div className="w-full max-w-sm motion-preset-fade motion-duration-700">
+      <div className="w-full max-w-sm">
         <div className="flex flex-col items-center gap-8">
-          <header className="flex flex-col items-center gap-4 motion-preset-slide-up motion-duration-700 motion-delay-100">
-            <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary motion-preset-pop motion-duration-1000 motion-delay-300">
+          <header className="flex flex-col items-center gap-4">
+            <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
               <span className="icon-[tabler--login-2] size-7" />
             </div>
             <div className="text-center">
@@ -52,7 +52,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           <form onSubmit={handleSubmit} className="card bg-base-100 w-full motion-preset-slide-up motion-duration-700 motion-delay-200">
             <div className="card-body p-6 gap-6">
               {error && (
-                <div className="text-sm text-error flex items-center gap-2 justify-center motion-preset-shake">
+                <div className="text-sm text-error flex items-center gap-2 justify-center">
                   <span className="icon-[tabler--alert-circle] size-4" />
                   {error}
                 </div>
@@ -90,7 +90,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
               <button
                 type="submit"
-                className="btn btn-primary active:motion-preset-compress"
+                className="btn btn-primary"
                 disabled={pending}
               >
                 {pending ? "Iniciando sesión..." : "Iniciar sesión"}

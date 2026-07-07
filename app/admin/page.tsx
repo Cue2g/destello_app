@@ -3,9 +3,9 @@ import { PageHeader } from "@/components/page-header"
 
 export default function AdminDashboard() {
   return (
-    <div className="motion-preset-fade motion-duration-700">
+    <div>
       <PageHeader breadcrumbs={[{ label: "Admin" }]} />
-      <h1 className="text-lg font-bold tracking-tight mb-6 motion-preset-slide-up motion-duration-500">Panel de administración</h1>
+      <h1 className="text-lg font-bold tracking-tight mb-6">Panel de administración</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link

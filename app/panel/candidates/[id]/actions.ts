@@ -4,8 +4,7 @@ import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
 import { CandidateStatus } from "@/app/generated/prisma/enums"
-import fs from "fs/promises"
-import path from "path"
+import { deleteFile } from "@/lib/gcs"
 
 async function verifyCandidateAccess(candidateId: number) {
   const session = await auth()
@@ -57,11 +56,11 @@ export async function deleteCandidate(id: number) {
   const candidate = await verifyCandidateAccess(id)
 
   if (candidate.cvFilePath) {
-    const fullPath = path.join(process.cwd(), "public", candidate.cvFilePath)
     try {
-      await fs.unlink(fullPath)
-    } catch {
-      // file might not exist
+      await deleteFile(candidate.cvFilePath)
+    } catch (err) {
+      console.error("[deleteCandidate] Error al eliminar archivo de GCS:", err)
+      throw new Error("Error al eliminar el CV del almacenamiento. El candidato NO fue eliminado.")
     }
   }
 

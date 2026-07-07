@@ -1,12 +1,12 @@
 import Imap from 'imap'
 import { simpleParser } from 'mailparser'
-import fs from 'fs/promises'
 import path from 'path'
 import prisma from '@/lib/prisma'
 import { decrypt } from './crypto'
 import { parseCvFile, classifyTags } from './cv-parser'
 import { validateCandidateData } from './validate-candidate'
 import { normalizePhone } from './normalize-phone'
+import { uploadFile, deleteFile, buildGcsKey } from '@/lib/gcs'
 
 type AttachStatus = 'created' | 'duplicate' | 'error'
 
@@ -210,20 +210,12 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
         const filename = attachment.filename || 'archivo'
         const ext = path.extname(filename).toLowerCase()
         const savedName = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${filename}`
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads')
-        const filePath = path.join(uploadDir, savedName)
-
-        await fs.mkdir(uploadDir, { recursive: true })
-        await fs.writeFile(filePath, attachment.content)
-
         const mimeType = getMimeType(ext)
-        const relativePath = `/uploads/${savedName}`
-
-        console.log(`${LOG_PREFIX}   Saved attachment "${filename}" -> ${relativePath}`)
+        let gcsUrl: string | null = null
 
         try {
           console.log(`${LOG_PREFIX}   Parsing CV...`)
-          const cvData = await parseCvFile(filePath, mimeType)
+          const cvData = await parseCvFile(attachment.content, mimeType)
           console.log(`${LOG_PREFIX}   Parsed CV: name="${cvData.name}", email="${cvData.email}", phone="${cvData.phone}"`)
 
           const existingTags = await prisma.tag.findMany({
@@ -249,7 +241,7 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
           }, undefined, clientId)
 
           if (validationErrors.length > 0) {
-            await fs.unlink(filePath).catch(() => {})
+            // No GCS file to clean up — upload hasn't happened yet
             const errMsg = validationErrors.map(e =>
               e.field === 'email' && e.code === 'exists' ? 'Email duplicado' :
               e.field === 'phone' && e.code === 'exists' ? 'Teléfono duplicado' :
@@ -268,6 +260,11 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
             `Fecha: ${parsed.date?.toISOString() || ''}`,
           ].filter(Boolean).join('\n')
 
+          // Only upload to GCS after validation passes
+          const gcsKey = buildGcsKey(clientId, savedName)
+          gcsUrl = await uploadFile(attachment.content, gcsKey, mimeType)
+          console.log(`${LOG_PREFIX}   Saved attachment "${filename}" -> ${gcsUrl}`)
+
           const candidate = await prisma.candidate.create({
             data: {
               name: cvData.name || null,
@@ -281,7 +278,7 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
               cvSummary: cvData.summary || null,
               rawText: null,
               source: 'EMAIL',
-              cvFilePath: relativePath,
+              cvFilePath: gcsUrl,
               observations,
               clientId,
               uploadedById: null,
@@ -302,8 +299,10 @@ export async function syncEmails(clientId: number): Promise<SyncResult> {
             candidateId: candidate.id,
           })
         } catch (err: unknown) {
-          await fs.unlink(filePath).catch(() => {})
           console.log(`${LOG_PREFIX}   Error processing attachment: ${(err as Error).message}`)
+          if (gcsUrl) {
+            await deleteFile(gcsUrl)
+          }
           result.errors++
           result.details.push({
             emailSubject: subject,

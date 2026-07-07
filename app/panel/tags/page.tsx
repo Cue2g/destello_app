@@ -18,12 +18,12 @@ export default async function TagsPage() {
   })
 
   return (
-    <div className="motion-preset-fade motion-duration-500">
+    <div>
       <PageHeader
         breadcrumbs={[{ label: "Panel", href: "/panel" }, { label: "Tags" }]}
         backHref="/panel"
       />
-      <h1 className="text-lg font-bold tracking-tight mb-6 motion-preset-slide-up motion-duration-500">Tags</h1>
+      <h1 className="text-lg font-bold tracking-tight mb-6">Tags</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="intersect:motion-preset-slide-left intersect:motion-opacity-in-0 motion-ease-spring-smooth lg:col-span-2">

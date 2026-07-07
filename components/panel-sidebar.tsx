@@ -130,7 +130,7 @@ export function PanelSidebar({
           <Link
             href="/panel/upload"
             onClick={handleNavigate}
-            className="btn btn-primary btn-sm flex-1 gap-1.5 active:motion-preset-compress"
+            className="btn btn-primary btn-sm flex-1 gap-1.5"
           >
             <span className="icon-[tabler--file-upload] size-4" />
             Subir
@@ -139,7 +139,7 @@ export function PanelSidebar({
           <button
             type="button"
             onClick={() => { handleEmailSync(); handleNavigate() }}
-            className="btn btn-outline btn-sm flex-1 gap-1.5 active:motion-preset-compress"
+            className="btn btn-outline btn-sm flex-1 gap-1.5"
             disabled={syncingEmail}
           >
             {syncingEmail ? (

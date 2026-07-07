@@ -25,7 +25,7 @@ export function PanelShell({
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-50 motion-preset-slide-right-lg motion-duration-300">
+        <div className="md:hidden fixed inset-0 z-50">
           <PanelSidebar
             userName={userName}
             isOpen={sidebarOpen}
@@ -37,7 +37,7 @@ export function PanelShell({
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
-          className="md:hidden fixed inset-0 z-40 bg-neutral/50 motion-preset-fade-sm"
+          className="md:hidden fixed inset-0 z-40 bg-neutral/50"
           onClick={() => setSidebarOpen(false)}
         />
       )}

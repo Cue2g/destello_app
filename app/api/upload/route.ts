@@ -1,7 +1,5 @@
 import { auth } from "@/auth"
 import { NextRequest, NextResponse } from "next/server"
-import path from "path"
-import fs from "fs/promises"
 import { parseCvFile, classifyTags } from "@/lib/services/cv-parser"
 import { normalizePhone } from "@/lib/services/normalize-phone"
 import prisma from "@/lib/prisma"
@@ -35,7 +33,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No se subió ningún archivo" }, { status: 400 })
     }
 
-    const ext = path.extname(file.name).toLowerCase()
+    const ext = `.${file.name.split('.').pop()?.toLowerCase() || ''}`
     if (!['.pdf', '.docx', '.doc', '.png', '.jpg', '.jpeg'].includes(ext)) {
       return NextResponse.json({ error: "Solo se permiten archivos PDF, DOCX, PNG y JPG" }, { status: 400 })
     }
@@ -44,16 +42,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "El archivo excede el tamaño máximo de 10MB" }, { status: 400 })
     }
 
-    const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${file.name}`
-    const uploadDir = path.join(process.cwd(), "public", "uploads")
-    const filePath = path.join(uploadDir, fileName)
-
-    await fs.mkdir(uploadDir, { recursive: true })
     const bytes = await file.arrayBuffer()
-    await fs.writeFile(filePath, Buffer.from(bytes))
-
+    const buffer = Buffer.from(bytes)
     const mimeType = getMimeType(ext)
-    const parsed = await parseCvFile(filePath, mimeType)
+
+    const parsed = await parseCvFile(buffer, mimeType)
 
     const existingTags = await prisma.tag.findMany({
       where: { clientId: session.user.clientId! },
@@ -86,8 +79,6 @@ export async function POST(request: NextRequest) {
         suggestedTags,
       },
       cleanedText: JSON.stringify(parsed),
-      fileName,
-      filePath: `/uploads/${fileName}`,
     })
   } catch (err) {
     console.error("Upload error:", err)
